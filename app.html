@@ -79,13 +79,6 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14p
 .live-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--red);animation:pulse 1.2s infinite;margin-right:3px;vertical-align:middle}
 .empty-sidebar{padding:32px 16px;text-align:center;color:var(--ink3);font-size:13px;line-height:1.7}
 
-/* COMPETITION NAV (sidebar top pill bar) */
-.comp-pill-bar{padding:10px 14px 2px;border-bottom:1px solid var(--line);background:var(--surface);display:flex;gap:4px;flex-wrap:wrap}
-.comp-pill{font-family:var(--sans);font-size:11px;font-weight:500;color:var(--ink3);background:var(--surface2);border:1px solid var(--line);border-radius:20px;padding:4px 10px;cursor:pointer;transition:all .1s;white-space:nowrap}
-.comp-pill:hover{border-color:var(--line2);color:var(--ink2)}
-.comp-pill.active{background:var(--blue-pale2);border-color:var(--blue-pale2);color:var(--blue);font-weight:600}
-.comp-pill.disabled{opacity:.4;cursor:default;pointer-events:none}
-
 /* MAIN PANEL */
 #main-panel{flex:1;overflow-y:auto;height:100%;padding:24px 32px;background:var(--bg)}
 .empty{height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center}
@@ -406,7 +399,6 @@ details[open] .faq-chevron{transform:rotate(180deg)}
   .acc-lbl{width:115px;font-size:11px}
   .exact-summary{flex-direction:column}
   .ligues-grid{grid-template-columns:repeat(2,1fr)}
-  .comp-pill-bar{display:none}
 }
 </style>
 </head>
@@ -436,17 +428,10 @@ details[open] .faq-chevron{transform:rotate(180deg)}
 <!-- PAGE MATCHS -->
 <div id="page-matchs" class="page active">
   <div id="sidebar">
-    <div class="comp-pill-bar">
-      <button class="comp-pill active" data-comp="cdm">🌍 CDM 2026</button>
-      <button class="comp-pill" data-comp="elim">🏆 Élimination</button>
-      <button class="comp-pill disabled" title="Bientôt disponible">⭐ UCL</button>
-      <button class="comp-pill disabled" title="Bientôt disponible">🏴󠁧󠁢󠁥󠁮󠁧󠁿 PL</button>
-      <button class="comp-pill disabled" title="Bientôt disponible">🇪🇸 Liga</button>
-    </div>
     <div class="sidebar-head">
       <div class="sidebar-head-row">
-        <span class="sidebar-comp-label" id="sidebar-comp-label">CDM 2026 · Phase de groupes</span>
-        <span class="match-count" id="match-count">72</span>
+        <span class="sidebar-comp-label" id="sidebar-comp-label">CDM 2026 · Tous les matchs</span>
+        <span class="match-count" id="match-count">88</span>
       </div>
       <div class="sidebar-filters">
         <div class="view-toggle">
@@ -459,6 +444,7 @@ details[open] .faq-chevron{transform:rotate(180deg)}
           <option>A</option><option>B</option><option>C</option><option>D</option>
           <option>E</option><option>F</option><option>G</option><option>H</option>
           <option>I</option><option>J</option><option>K</option><option>L</option>
+          <option value="16es">16es de finale</option>
         </select>
       </div>
     </div>
@@ -468,7 +454,7 @@ details[open] .faq-chevron{transform:rotate(180deg)}
     <div class="empty">
       <div class="empty-icon">⚽</div>
       <div class="empty-headline">Sélectionne un match</div>
-      <p class="empty-sub">72 matchs · Modèle Poisson · Probabilités temps réel</p>
+      <p class="empty-sub">88 matchs · Modèle Poisson · Probabilités temps réel</p>
     </div>
   </div>
 </div>
@@ -600,7 +586,6 @@ var STRIPE_LINKS={hebdo:'https://buy.stripe.com/14AfZb0a15tO4TCf32bQY03',mensuel
 var sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 var currentUser=null,IS_PREMIUM=false;
 var __currentView='upcoming',__selectedMatchId=null;
-var __currentComp='cdm';
 var isMobile=window.innerWidth<=640;
 window.addEventListener('resize',function(){isMobile=window.innerWidth<=640;});
 
@@ -761,7 +746,6 @@ var MATCHES=[
   {id:1206,groupe:'L',date:'2026-06-27',heure:'21h00',home:{name:'Panama',flag:'🇵🇦',rank:81,form:['D','V','N','D','V']},away:{name:'Angleterre',flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',rank:4,form:['V','V','N','V','V']},stade:'BMO Field, Toronto',xgH:0.6,xgA:2.4,score:{home:0,away:2}}
 ];
 
-/* 16es de finale — Coupe du Monde 2026 (toutes les heures sont en heure française) */
 var ELIM_MATCHES=[
   {id:2001,phase:'16es',date:'2026-06-28',heure:'21h00',home:{name:'Afrique du Sud',flag:'🇿🇦',rank:61,form:['N','D','V','N','V']},away:{name:'Canada',flag:'🇨🇦',rank:42,form:['V','V','N','D','V']},stade:'SoFi Stadium, Los Angeles',xgH:1.0,xgA:1.8},
   {id:2002,phase:'16es',date:'2026-06-29',heure:'19h00',home:{name:'Brésil',flag:'🇧🇷',rank:5,form:['V','V','V','V','N']},away:{name:'Japon',flag:'🇯🇵',rank:18,form:['V','D','V','V','N']},stade:'NRG Stadium, Houston',xgH:2.3,xgA:1.2},
@@ -780,6 +764,10 @@ var ELIM_MATCHES=[
   {id:2015,phase:'16es',date:'2026-07-04',heure:'00h00',home:{name:'Argentine',flag:'🇦🇷',rank:1,form:['V','V','V','V','V']},away:{name:'Cap-Vert',flag:'🇨🇻',rank:71,form:['V','N','D','V','N']},stade:'Hard Rock Stadium, Miami',xgH:2.9,xgA:0.6},
   {id:2016,phase:'16es',date:'2026-07-04',heure:'03h30',home:{name:'Colombie',flag:'🇨🇴',rank:13,form:['V','V','N','V','V']},away:{name:'Ghana',flag:'🇬🇭',rank:52,form:['V','N','D','V','N']},stade:'Arrowhead Stadium, Kansas City',xgH:2.1,xgA:1.1}
 ];
+
+/* Source unique fusionnée */
+var ALL_MATCHES=MATCHES.concat(ELIM_MATCHES);
+function getActiveMatches(){return ALL_MATCHES;}
 
 function ppf(lam,k){if(k<0)return 0;var lp=-lam+k*Math.log(lam);for(var i=1;i<=k;i++)lp-=Math.log(i);return Math.exp(lp);}
 function getMatchData(m){
@@ -832,11 +820,15 @@ function fmtDate(d){return new Date(d).toLocaleDateString('fr-FR',{weekday:'shor
 function tier(p){return p>=60?'high':p>=40?'mid':'low';}
 function tierLabel(p){return p>=60?'Probable':p>=40?'Possible':'Rare';}
 function clamp(p){return Math.min(99,Math.max(1,p));}
-function getActiveMatches(){return __currentComp==='elim'?ELIM_MATCHES:MATCHES;}
 
 function renderMatchList(filterGrp,view){
   var source=getActiveMatches();
-  var all=source.filter(function(m){return!filterGrp||m.groupe===filterGrp;});
+  /* Filtre groupe : "16es" → phase élimination, sinon groupe lettre */
+  var all=source.filter(function(m){
+    if(!filterGrp)return true;
+    if(filterGrp==='16es')return m.phase==='16es';
+    return m.groupe===filterGrp;
+  });
   var finished=all.filter(function(m){return getMatchStatus(m)==='finished';}).sort(function(a,b){return b.date.localeCompare(a.date)||b.heure.localeCompare(a.heure);});
   var upcoming=all.filter(function(m){return getMatchStatus(m)!=='finished';}).sort(function(a,b){return a.date.localeCompare(b.date)||a.heure.localeCompare(b.heure);});
   var toShow=view==='upcoming'?upcoming:view==='finished'?finished:upcoming.concat(finished);
@@ -845,7 +837,10 @@ function renderMatchList(filterGrp,view){
   function renderItem(m){
     var status=getMatchStatus(m),center,meta,ct=wasCorrect(m),ctag='';
     if(status==='finished'&&ct!==null)ctag=ct?' <span class="mi-tag mi-tag-correct">✓</span>':' <span class="mi-tag mi-tag-wrong">✗</span>';
-    var grpTag=m.groupe?' <span class="mi-grp">'+m.groupe+'</span>':' <span class="mi-grp">16es</span>';
+    /* Tag phase : groupe lettre ou "16es" */
+    var grpTag=m.phase==='16es'
+      ?' <span class="mi-grp">16es</span>'
+      :(m.groupe?' <span class="mi-grp">'+m.groupe+'</span>':'');
     if(status==='finished'&&m.score){center='<span class="mi-score">'+m.score.home+' – '+m.score.away+'</span>';meta=fmtDate(m.date)+' <span class="mi-tag mi-tag-end">Fin</span>'+ctag;}
     else if(status==='live'){center='<span class="mi-vs">–</span>';meta='<span class="mi-tag mi-tag-live"><span class="live-dot"></span>LIVE '+getLiveMinute(m)+'</span>';}
     else{center='<span class="mi-vs">–</span>';meta=fmtDate(m.date)+' · '+m.heure;}
@@ -861,25 +856,6 @@ function renderMatchList(filterGrp,view){
 
 function openPanel(){document.getElementById('main-panel').classList.add('open');document.getElementById('main-panel').scrollTop=0;}
 function closePanel(){document.getElementById('main-panel').classList.remove('open');}
-
-function switchComp(comp){
-  __currentComp=comp;
-  document.querySelectorAll('.comp-pill[data-comp]').forEach(function(b){b.classList.toggle('active',b.dataset.comp===comp);});
-  var grpFilter=document.getElementById('group-filter');
-  var label=document.getElementById('sidebar-comp-label');
-  if(comp==='elim'){
-    grpFilter.style.display='none';
-    label.textContent='CDM 2026 · 16es de finale';
-  }else{
-    grpFilter.style.display='';
-    label.textContent='CDM 2026 · Phase de groupes';
-  }
-  grpFilter.value='';
-  __selectedMatchId=null;
-  closePanel();
-  document.getElementById('main-panel').innerHTML='<div class="empty"><div class="empty-icon">⚽</div><div class="empty-headline">Sélectionne un match</div><p class="empty-sub">'+(comp==='elim'?'16 matchs · Phase à élimination directe':'72 matchs · Modèle Poisson · Probabilités temps réel')+'</p></div>';
-  renderMatchList('',__currentView);
-}
 
 function showMatch(id,isRefresh){
   var source=getActiveMatches(),m=null;for(var i=0;i<source.length;i++)if(source[i].id===id){m=source[i];break;}
@@ -952,10 +928,10 @@ function showMatch(id,isRefresh){
     if(pred===act)predBadge='<div class="pred-badge correct">✓ Prédiction correcte — modèle avait prévu : '+predLabel+'</div>';
     else{var actLabel=act==='home_win'?m.home.name+' vainqueur':act==='draw'?'Nul':m.away.name+' vainqueur';predBadge='<div class="pred-badge wrong">✗ Modèle avait prévu '+predLabel+' · résultat : '+actLabel+'</div>';}
   }
-  var grpLabel=m.groupe?'Groupe '+m.groupe:'16es de finale';
+  var grpLabel=m.phase==='16es'?'16es de finale':(m.groupe?'Groupe '+m.groupe:'');
   if(status==='finished'&&m.score)centerHtml='<div class="mh-score">'+m.score.home+' – '+m.score.away+'</div><div class="mh-status mh-status-end">Terminé · '+fmtDate(m.date)+'</div><div class="mh-info">'+m.stade+'<br>'+grpLabel+'</div>';
   else if(status==='live')centerHtml='<div class="mh-vs">vs</div><div class="mh-status mh-status-live">● Live · '+getLiveMinute(m)+'</div><div class="mh-info">'+m.stade+'</div>';
-  else centerHtml='<div class="mh-vs">vs</div><div class="mh-info">'+fmtDate(m.date)+' · '+m.heure+'<br>'+m.stade+(m.groupe?'':'<br>'+grpLabel)+'</div>';
+  else centerHtml='<div class="mh-vs">vs</div><div class="mh-info">'+fmtDate(m.date)+' · '+m.heure+'<br>'+m.stade+(grpLabel?'<br>'+grpLabel:'')+'</div>';
   var pHW=paris[0].pct,pDR=paris[1].pct,pAW=paris[2].pct;
   var probBarHtml='<div class="prob-bar-wrap"><div class="prob-bar-label">Probabilités (Poisson)</div>'+
     '<div class="prob-bar-row"><span class="prob-bar-name">'+m.home.name+'</span>'+
@@ -1018,7 +994,7 @@ function switchPerfTab(tab){
   ['overview','exact','matchs'].forEach(function(t){var el=document.getElementById('perf-tab-'+t);if(el)el.style.display=t===tab?'block':'none';});
 }
 function buildPerfPage(){
-  var finished=MATCHES.filter(function(m){return m.score;}),total=finished.length;
+  var finished=ALL_MATCHES.filter(function(m){return m.score;}),total=finished.length;
   if(!total){document.getElementById('perf-content').innerHTML='<div class="page-header"><div class="page-title">Performance du modèle</div><div class="page-sub">Les statistiques apparaîtront dès que les premiers matchs seront terminés.</div></div>';return;}
   var correct1X2=0,overallSurprise=0;
   var betTypes={over25:{c:0,t:0,label:'Plus de 2,5 buts'},under25:{c:0,t:0,label:'Moins de 2,5 buts'},over15:{c:0,t:0,label:'Plus de 1,5 buts'},btts_yes:{c:0,t:0,label:'Les deux équipes marquent'},cs_home:{c:0,t:0,label:'Clean sheet domicile'},cs_away:{c:0,t:0,label:'Clean sheet extérieur'}};
@@ -1032,7 +1008,8 @@ function buildPerfPage(){
     paris.forEach(function(b){if(b.type&&betTypes[b.type]){betTypes[b.type].t++;if(getPredOutcome(b,m.score))betTypes[b.type].c++;}});
     var exactOk=exactScoreHit(m);if(exactOk)exactHits++;
     totalGoals+=m.score.home+m.score.away;
-    matchRows.push({m:m,ok:ok,exactOk:exactOk,pred:pred==='home_win'?m.home.flag+' '+m.home.name:pred==='draw'?'Nul':m.away.flag+' '+m.away.name,leadPct:leadPct,darkBlueCount:countDarkBlueScores(m)});
+    var grpLbl=m.phase==='16es'?'16es':(m.groupe||'');
+    matchRows.push({m:m,ok:ok,exactOk:exactOk,pred:pred==='home_win'?m.home.flag+' '+m.home.name:pred==='draw'?'Nul':m.away.flag+' '+m.away.name,leadPct:leadPct,darkBlueCount:countDarkBlueScores(m),grpLbl:grpLbl});
   });
   var acc=Math.round(correct1X2/total*100),upsets=total-correct1X2,exactAcc=Math.round(exactHits/total*100);
   var avgConfWhenWrong=upsets>0?Math.round(overallSurprise/upsets)+'%':'—',avgGoals=(totalGoals/total).toFixed(2);
@@ -1041,7 +1018,7 @@ function buildPerfPage(){
   Object.keys(betTypes).forEach(function(k){var bt=betTypes[k];if(!bt.t)return;var pct=Math.round(bt.c/bt.t*100);var fc=pct>=65?'acc-fill-green':pct>=45?'acc-fill-amber':'acc-fill-red';var col=pct>=65?'var(--green)':pct>=45?'var(--amber)':'var(--red)';accRows+='<div class="acc-row"><span class="acc-lbl">'+bt.label+'</span><div class="acc-track"><div class="acc-fill '+fc+'" style="width:'+pct+'%"></div></div><span class="acc-pct" style="color:'+col+'">'+pct+'%</span><span class="acc-n">'+bt.c+'/'+bt.t+'</span></div>';});
   var tableRows=matchRows.slice().sort(function(a,b){return b.leadPct-a.leadPct;}).map(function(r){
     var m=r.m;var exactTag=r.exactOk?'<span class="rt-hit exact">⭐ Exact</span>':'';
-    return'<tr><td><span class="rt-grp">'+m.groupe+'</span></td><td class="rt-teams">'+m.home.flag+' '+m.home.name+' vs '+m.away.flag+' '+m.away.name+'</td><td class="rt-score">'+m.score.home+'–'+m.score.away+'</td><td style="font-size:11px;color:var(--ink3)">'+r.pred+'<br><span style="font-size:10px">Confiance '+r.leadPct+'%</span></td><td><span class="rt-hit '+(r.ok?'yes':'no')+'">'+(r.ok?'✓ Correct':'✗ Raté')+'</span> '+exactTag+'</td></tr>';
+    return'<tr><td><span class="rt-grp">'+r.grpLbl+'</span></td><td class="rt-teams">'+m.home.flag+' '+m.home.name+' vs '+m.away.flag+' '+m.away.name+'</td><td class="rt-score">'+m.score.home+'–'+m.score.away+'</td><td style="font-size:11px;color:var(--ink3)">'+r.pred+'<br><span style="font-size:10px">Confiance '+r.leadPct+'%</span></td><td><span class="rt-hit '+(r.ok?'yes':'no')+'">'+(r.ok?'✓ Correct':'✗ Raté')+'</span> '+exactTag+'</td></tr>';
   }).join('');
   document.getElementById('perf-content').innerHTML=
     '<div class="page-header"><div class="page-title">Performance du modèle</div><div class="page-sub">Précision des prédictions Poisson · '+total+' matchs disputés</div></div>'+
@@ -1058,11 +1035,11 @@ function buildPerfPage(){
     '<div id="perf-tab-exact" style="display:none"><div class="perf-section"><div class="perf-section-head"><span class="perf-section-title">Scores exacts trouvés</span><span class="perf-section-badge badge-purple">'+exactHits+' / '+total+'</span></div>'+
       '<div class="exact-summary"><div class="exact-donut">'+donut(exactAcc,'var(--purple)',40,50,50)+'<div class="exact-donut-center"><span class="exact-donut-pct">'+exactAcc+'%</span><span class="exact-donut-sub">Réussite</span></div></div>'+
       '<div class="exact-summary-text">Sur les <b>'+total+' matchs</b> disputés, le modèle a trouvé le score exact à <b>'+exactHits+' reprise'+(exactHits>1?'s':'')+'</b> ('+exactAcc+'%). Un score est trouvé lorsqu\'il correspond à une case bleue foncée de la matrice.</div></div>'+
-      '<div style="overflow-x:auto;padding:0 0 4px"><table class="result-table"><thead><tr><th>Gr.</th><th>Match</th><th>Score réel</th><th>Cases bleues</th><th>Trouvé ?</th></tr></thead><tbody>'+
-        matchRows.slice().sort(function(a,b){return b.m.date.localeCompare(a.m.date);}).map(function(r){var m=r.m;return'<tr><td><span class="rt-grp">'+m.groupe+'</span></td><td class="rt-teams">'+m.home.flag+' '+m.home.name+' vs '+m.away.flag+' '+m.away.name+'</td><td class="rt-score">'+m.score.home+'–'+m.score.away+'</td><td style="font-size:11px;color:var(--ink3)">'+r.darkBlueCount+'</td><td>'+(r.exactOk?'<span class="rt-hit exact">⭐ Oui</span>':'<span class="rt-hit no">✗ Non</span>')+'</td></tr>';}).join('')+
+      '<div style="overflow-x:auto;padding:0 0 4px"><table class="result-table"><thead><tr><th>Phase</th><th>Match</th><th>Score réel</th><th>Cases bleues</th><th>Trouvé ?</th></tr></thead><tbody>'+
+        matchRows.slice().sort(function(a,b){return b.m.date.localeCompare(a.m.date);}).map(function(r){var m=r.m;return'<tr><td><span class="rt-grp">'+r.grpLbl+'</span></td><td class="rt-teams">'+m.home.flag+' '+m.home.name+' vs '+m.away.flag+' '+m.away.name+'</td><td class="rt-score">'+m.score.home+'–'+m.score.away+'</td><td style="font-size:11px;color:var(--ink3)">'+r.darkBlueCount+'</td><td>'+(r.exactOk?'<span class="rt-hit exact">⭐ Oui</span>':'<span class="rt-hit no">✗ Non</span>')+'</td></tr>';}).join('')+
       '</tbody></table></div></div></div>'+
     '<div id="perf-tab-matchs" style="display:none"><div class="perf-section"><div class="perf-section-head"><span class="perf-section-title">Détail match par match</span><span class="perf-section-badge badge-blue">Trié par confiance</span></div>'+
-      '<div style="overflow-x:auto"><table class="result-table"><thead><tr><th>Gr.</th><th>Match</th><th>Score</th><th>Prédiction</th><th>Résultat</th></tr></thead><tbody>'+tableRows+'</tbody></table></div></div></div>';
+      '<div style="overflow-x:auto"><table class="result-table"><thead><tr><th>Phase</th><th>Match</th><th>Score</th><th>Prédiction</th><th>Résultat</th></tr></thead><tbody>'+tableRows+'</tbody></table></div></div></div>';
 }
 
 function switchPage(page){
@@ -1083,7 +1060,6 @@ document.getElementById('match-list').addEventListener('click',function(e){var i
 document.getElementById('main-panel').addEventListener('click',function(e){var btn=e.target.closest('[data-tab]');if(btn&&btn.classList.contains('tab-btn'))showTab(btn.dataset.tab);});
 document.querySelectorAll('.nav-btn[data-page],.bnav-btn[data-page]').forEach(function(btn){btn.addEventListener('click',function(){switchPage(btn.dataset.page);});});
 document.getElementById('group-filter').addEventListener('change',function(){renderMatchList(this.value,__currentView);});
-document.querySelectorAll('.comp-pill[data-comp]').forEach(function(btn){btn.addEventListener('click',function(){switchComp(btn.dataset.comp);});});
 
 var __pollingInterval=null;
 function startPolling(){if(__pollingInterval)return;__pollingInterval=setInterval(function(){renderMatchList(document.getElementById('group-filter').value,__currentView);if(__selectedMatchId!==null){var src=getActiveMatches();var m=src.find(function(x){return x.id===__selectedMatchId;});if(m){var ck=__selectedMatchId+'_'+(IS_PREMIUM?'1':'0')+'_'+(m.score?m.score.home+'x'+m.score.away:'x');if(!__matchCache[ck])showMatch(__selectedMatchId,true);}}},60000);}
