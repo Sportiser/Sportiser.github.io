@@ -237,6 +237,13 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14p
 .page-header{margin-bottom:24px}
 .page-title{font-family:var(--mono);font-weight:700;font-size:22px;letter-spacing:-.3px;margin-bottom:4px;color:var(--ink)}
 .page-sub{font-size:13px;color:var(--ink3);line-height:1.6;max-width:480px}
+.perf-hero{background:linear-gradient(135deg,var(--purple) 0%,var(--blue) 100%);border-radius:var(--r);padding:22px 24px;margin-bottom:20px;color:#fff;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.perf-hero-num{font-family:var(--mono);font-weight:700;font-size:40px;line-height:1}
+.perf-hero-text{flex:1;min-width:220px}
+.perf-hero-title{font-family:var(--mono);font-weight:700;font-size:14px;margin-bottom:4px;letter-spacing:.02em}
+.perf-hero-sub{font-size:12px;opacity:.9;line-height:1.6}
+.perf-hero-stat{display:flex;flex-direction:column;align-items:center;background:rgba(255,255,255,.14);border-radius:var(--r-sm);padding:12px 20px;flex-shrink:0}
+.perf-hero-stat-lbl{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;opacity:.85;margin-top:2px}
 .perf-kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px}
 .perf-kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 14px;border-top:2px solid var(--line2)}
 .perf-kpi.blue{border-top-color:var(--blue)}
@@ -399,6 +406,7 @@ details[open] .faq-chevron{transform:rotate(180deg)}
   .acc-lbl{width:115px;font-size:11px}
   .exact-summary{flex-direction:column}
   .ligues-grid{grid-template-columns:repeat(2,1fr)}
+  .perf-hero{flex-direction:column;text-align:center}
 }
 </style>
 </head>
@@ -444,8 +452,8 @@ details[open] .faq-chevron{transform:rotate(180deg)}
           <option>A</option><option>B</option><option>C</option><option>D</option>
           <option>E</option><option>F</option><option>G</option><option>H</option>
           <option>I</option><option>J</option><option>K</option><option>L</option>
+          <option value="32es">32es de finale</option>
           <option value="16es">16es de finale</option>
-          <option value="8es">8es de finale</option>
           <option value="quarts">Quarts</option>
           <option value="demis">Demi-finales</option>
           <option value="finale">Finale</option>
@@ -475,7 +483,7 @@ details[open] .faq-chevron{transform:rotate(180deg)}
         <div class="ligue-flag">🌍</div>
         <div class="ligue-name">Coupe du Monde</div>
         <div class="ligue-country">FIFA · USA / Canada / Mexique 2026</div>
-        <span class="ligue-badge badge-available">Disponible</span>
+        <span class="ligue-badge badge-live-now">En cours · Demi-finales</span>
       </div>
       <div class="ligue-card">
         <div class="ligue-flag">⭐</div>
@@ -664,7 +672,7 @@ async function forceCheckPremium(){
 }
 function openStripe(plan){var checks=0;var pollId=setInterval(async function(){checks++;await checkPremiumAfterPayment();if(IS_PREMIUM||checks>=60)clearInterval(pollId);},5000);window.open(STRIPE_LINKS[plan]+'?prefilled_email='+encodeURIComponent(currentUser.email),'_blank');}
 
-/* ===== DONNÉES MATCHS — SCORES MIS À JOUR JUILLET 2026 ===== */
+/* ===== DONNÉES MATCHS — SCORES MIS À JOUR 14 JUILLET 2026 (avant demi France-Espagne) ===== */
 var MATCH_DATA={
   1:{stats:{possession:[55,45],tirs:[13,9],corners:[5,4],fautes:[9,14],xG:[1.8,1.1]},h2h:[{date:'Nov 2022',home:'Canada',away:'Bosnie',sh:1,sa:1,comp:'Amical'}],goals1h:[2,1,1,0,2,1,0,1,2,0,1,2,1,0,1,1,2,0,1,2],goals2h:[1,2,1,2,0,1,3,1,0,2,1,0,2,1,1,2,1,1,0,1],players:{home:[{name:'A. Davies',pos:'DEF',status:'ok',goals:3,cap:62},{name:'J. David',pos:'ATT',status:'ok',goals:18,cap:45},{name:'C. Larin',pos:'ATT',status:'ok',goals:24,cap:68},{name:'T. Hoilett',pos:'MIL',status:'dout',goals:5,cap:89}],away:[{name:'E. Džeko',pos:'ATT',status:'ok',goals:63,cap:127},{name:'M. Pjanić',pos:'MIL',status:'inj',goals:16,cap:110},{name:'S. Kolasinac',pos:'DEF',status:'ok',goals:5,cap:62},{name:'A. Begović',pos:'GK',status:'ok',goals:0,cap:70}]}},
   2:{stats:{possession:[58,42],tirs:[17,8],corners:[6,3],fautes:[8,15],xG:[2.1,0.9]},h2h:[{date:'Mar 2023',home:'USA',away:'Paraguay',sh:1,sa:0,comp:'Amical'}],goals1h:[1,2,0,1,2,1,0,2,1,1,0,1,2,0,1,2,1,0,1,2],goals2h:[2,1,2,1,1,0,1,2,1,1,2,0,1,1,2,1,1,2,0,1],players:{home:[{name:'C. Pulisic',pos:'ATT',status:'ok',goals:31,cap:78},{name:'W. McKennie',pos:'MIL',status:'ok',goals:14,cap:65},{name:'T. Adams',pos:'MIL',status:'ok',goals:4,cap:74},{name:'M. Turner',pos:'GK',status:'ok',goals:0,cap:49}],away:[{name:'M. Almirón',pos:'MIL',status:'ok',goals:14,cap:76},{name:'R. Sanabria',pos:'ATT',status:'ok',goals:19,cap:55},{name:'G. Gómez',pos:'MIL',status:'inj',goals:11,cap:101},{name:'A. Balbuena',pos:'DEF',status:'ok',goals:3,cap:82}]}},
@@ -672,7 +680,12 @@ var MATCH_DATA={
   6:{stats:{possession:[56,44],tirs:[15,12],corners:[6,5],fautes:[10,12],xG:[2.0,1.5]},h2h:[{date:'Nov 2022',home:'Pays-Bas',away:'Japon',sh:0,sa:0,comp:'Amical'}],goals1h:[1,2,1,0,1,2,1,1,0,2,1,1,2,0,1,2,1,1,0,2],goals2h:[1,1,2,1,2,1,0,1,2,1,1,2,1,0,2,1,2,1,1,1],players:{home:[{name:'V. van Dijk',pos:'DEF',status:'ok',goals:12,cap:68},{name:'M. Depay',pos:'ATT',status:'ok',goals:44,cap:97},{name:'C. Gakpo',pos:'ATT',status:'ok',goals:22,cap:48},{name:'F. de Jong',pos:'MIL',status:'inj',goals:11,cap:59}],away:[{name:'D. Kamada',pos:'MIL',status:'ok',goals:22,cap:67},{name:'T. Minamino',pos:'MIL',status:'ok',goals:21,cap:74},{name:'W. Endo',pos:'MIL',status:'ok',goals:8,cap:81},{name:'S. Gonda',pos:'GK',status:'ok',goals:0,cap:62}]}},
   7:{stats:{possession:[66,34],tirs:[19,7],corners:[8,2],fautes:[7,14],xG:[2.8,0.7]},h2h:[],goals1h:[2,1,2,3,2,1,2,3,1,2,2,1,2,1,3,2,1,2,2,1],goals2h:[2,3,1,2,1,2,3,1,2,2,1,3,2,1,2,2,2,1,2,3],players:{home:[{name:'P. Gavi',pos:'MIL',status:'ok',goals:10,cap:33},{name:'P. Pedri',pos:'MIL',status:'ok',goals:11,cap:40},{name:'M. Oyarzabal',pos:'ATT',status:'ok',goals:24,cap:47},{name:'U. Simón',pos:'GK',status:'ok',goals:0,cap:38}],away:[{name:'R. Tavares',pos:'MIL',status:'ok',goals:7,cap:54},{name:'G. Ramos',pos:'ATT',status:'ok',goals:14,cap:41},{name:'S. Fortes',pos:'GK',status:'ok',goals:0,cap:48},{name:'B. Évora',pos:'ATT',status:'inj',goals:9,cap:29}]}},
   8:{stats:{possession:[59,41],tirs:[16,10],corners:[5,4],fautes:[9,12],xG:[2.2,1.2]},h2h:[{date:'Jun 2018',home:'Belgique',away:'Égypte',sh:3,sa:0,comp:'CDM'}],goals1h:[1,2,1,2,1,0,2,1,2,1,1,2,0,2,1,2,1,0,2,1],goals2h:[2,1,1,2,2,1,1,2,1,2,2,1,2,1,1,2,2,1,1,2],players:{home:[{name:'R. Lukaku',pos:'ATT',status:'ok',goals:84,cap:110},{name:'K. De Bruyne',pos:'MIL',status:'dout',goals:28,cap:106},{name:'J. Doku',pos:'ATT',status:'ok',goals:8,cap:27},{name:'A. Onana',pos:'GK',status:'ok',goals:0,cap:34}],away:[{name:'M. Salah',pos:'ATT',status:'ok',goals:55,cap:97},{name:'T. Mohamed',pos:'MIL',status:'ok',goals:17,cap:83},{name:'A. Hegazy',pos:'DEF',status:'ok',goals:5,cap:88},{name:'M. El Shenawy',pos:'GK',status:'ok',goals:0,cap:74}]}},
-  9:{stats:{possession:[60,40],tirs:[17,10],corners:[7,3],fautes:[8,12],xG:[2.3,1.0]},h2h:[{date:'Oct 2022',home:'France',away:'Sénégal',sh:2,sa:0,comp:'Amical'},{date:'Jun 2002',home:'Sénégal',away:'France',sh:1,sa:0,comp:'CDM'}],goals1h:[1,2,1,2,1,2,0,1,2,1,2,1,0,2,1,2,1,2,1,0],goals2h:[2,1,2,1,2,1,2,1,1,2,1,2,2,1,1,2,1,2,1,2],players:{home:[{name:'K. Mbappé',pos:'ATT',status:'ok',goals:57,cap:98},{name:'A. Griezmann',pos:'ATT',status:'ok',goals:56,cap:137},{name:'A. Tchouaméni',pos:'MIL',status:'ok',goals:8,cap:47},{name:'M. Maignan',pos:'GK',status:'ok',goals:0,cap:37}],away:[{name:'S. Mané',pos:'ATT',status:'ok',goals:38,cap:96},{name:'I. Gueye',pos:'MIL',status:'ok',goals:4,cap:92},{name:'E. Mendy',pos:'GK',status:'ok',goals:0,cap:51},{name:'K. Kouyaté',pos:'DEF',status:'ok',goals:8,cap:74}]}}
+  9:{stats:{possession:[60,40],tirs:[17,10],corners:[7,3],fautes:[8,12],xG:[2.3,1.0]},h2h:[{date:'Oct 2022',home:'France',away:'Sénégal',sh:2,sa:0,comp:'Amical'},{date:'Jun 2002',home:'Sénégal',away:'France',sh:1,sa:0,comp:'CDM'}],goals1h:[1,2,1,2,1,2,0,1,2,1,2,1,0,2,1,2,1,2,1,0],goals2h:[2,1,2,1,2,1,2,1,1,2,1,2,2,1,1,2,1,2,1,2],players:{home:[{name:'K. Mbappé',pos:'ATT',status:'ok',goals:57,cap:98},{name:'A. Griezmann',pos:'ATT',status:'ok',goals:56,cap:137},{name:'A. Tchouaméni',pos:'MIL',status:'ok',goals:8,cap:47},{name:'M. Maignan',pos:'GK',status:'ok',goals:0,cap:37}],away:[{name:'S. Mané',pos:'ATT',status:'ok',goals:38,cap:96},{name:'I. Gueye',pos:'MIL',status:'ok',goals:4,cap:92},{name:'E. Mendy',pos:'GK',status:'ok',goals:0,cap:51},{name:'K. Kouyaté',pos:'DEF',status:'ok',goals:8,cap:74}]}},
+  4001:{stats:{possession:[54,46],tirs:[22,5],corners:[7,2],fautes:[8,13],xG:[3.0,0.1]},h2h:[{date:'Déc 2022',home:'France',away:'Maroc',sh:2,sa:0,comp:'CDM (demi)'}],goals1h:[1,0,1,2,0,1,1,0,2,1,0,1,1,0,2,1,0,1,1,0],goals2h:[1,2,0,1,1,2,0,1,1,2,1,0,1,2,0,1,1,2,0,1],players:{home:[{name:'K. Mbappé',pos:'ATT',status:'ok',goals:59,cap:99},{name:'O. Dembélé',pos:'ATT',status:'ok',goals:9,cap:41},{name:'A. Tchouaméni',pos:'MIL',status:'ok',goals:8,cap:48},{name:'M. Maignan',pos:'GK',status:'ok',goals:0,cap:38}],away:[{name:'A. Hakimi',pos:'DEF',status:'ok',goals:7,cap:78},{name:'A. Bouaddi',pos:'MIL',status:'ok',goals:2,cap:12},{name:'Y. Bounou',pos:'GK',status:'ok',goals:0,cap:71},{name:'N. El Aynaoui',pos:'MIL',status:'ok',goals:1,cap:19}]}},
+  4002:{stats:{possession:[61,30],tirs:[17,5],corners:[6,2],fautes:[9,12],xG:[2.08,0.38]},h2h:[{date:'1986',home:'Belgique',away:'Espagne',sh:1,sa:1,comp:'CDM (quart, tab)'}],goals1h:[1,2,1,0,2,1,0,1,2,0,1,2,1,0,1,1,2,0,1,2],goals2h:[1,1,2,1,0,2,1,1,0,2,1,0,2,1,1,2,1,0,1,2],players:{home:[{name:'F. Ruiz',pos:'MIL',status:'ok',goals:2,cap:34},{name:'M. Merino',pos:'MIL',status:'ok',goals:3,cap:29},{name:'L. Yamal',pos:'ATT',status:'ok',goals:5,cap:33},{name:'U. Simón',pos:'GK',status:'ok',goals:0,cap:39}],away:[{name:'C. De Ketelaere',pos:'ATT',status:'ok',goals:3,cap:31},{name:'K. De Bruyne',pos:'MIL',status:'ok',goals:29,cap:107},{name:'T. Courtois',pos:'GK',status:'inj',goals:0,cap:104},{name:'Y. Tielemans',pos:'MIL',status:'inj',goals:9,cap:78}]}},
+  4003:{stats:{possession:[44,47],tirs:[13,14],corners:[5,6],fautes:[11,10],xG:[0.77,0.96]},h2h:[],goals1h:[1,2,1,2,0,1,2,1,1,2,0,1,2,1,1,0,2,1,1,2],goals2h:[2,1,1,2,1,0,2,1,2,1,1,2,0,1,2,1,1,2,1,1],players:{home:[{name:'E. Haaland',pos:'ATT',status:'ok',goals:27,cap:44},{name:'A. Schjelderup',pos:'ATT',status:'ok',goals:4,cap:16},{name:'Ø. Nyland',pos:'GK',status:'ok',goals:0,cap:41},{name:'T. Heggem',pos:'DEF',status:'ok',goals:1,cap:22}],away:[{name:'J. Bellingham',pos:'MIL',status:'ok',goals:4,cap:47},{name:'H. Kane',pos:'ATT',status:'ok',goals:6,cap:107},{name:'J. Pickford',pos:'GK',status:'ok',goals:0,cap:71},{name:'M. Rogers',pos:'MIL',status:'ok',goals:2,cap:14}]}},
+  4004:{stats:{possession:[57,43],tirs:[16,11],corners:[6,4],fautes:[10,11],xG:[2.1,1.3]},h2h:[],goals1h:[2,1,1,0,2,1,1,2,0,1,2,1,0,2,1,1,2,0,1,2],goals2h:[1,2,1,1,0,2,1,2,1,0,1,2,1,1,2,0,1,2,1,1],players:{home:[{name:'L. Messi',pos:'ATT',status:'ok',goals:22,cap:32},{name:'J. Álvarez',pos:'ATT',status:'ok',goals:7,cap:19},{name:'A. Mac Allister',pos:'MIL',status:'ok',goals:3,cap:24},{name:'E. Martínez',pos:'GK',status:'ok',goals:0,cap:47}],away:[{name:'D. Ndoye',pos:'ATT',status:'ok',goals:3,cap:21},{name:'D. Sow',pos:'MIL',status:'ok',goals:1,cap:33},{name:'Y. Sommer',pos:'GK',status:'ok',goals:0,cap:66},{name:'M. Akanji',pos:'DEF',status:'ok',goals:0,cap:59}]}},
+  5001:{stats:{possession:[52,48],tirs:[15,13],corners:[6,5],fautes:[10,11],xG:[1.9,1.7]},h2h:[{date:'Juil 2024',home:'Espagne',away:'France',sh:2,sa:1,comp:'Euro 2024 (demi)'},{date:'Oct 2024',home:'France',away:'Espagne',sh:1,sa:2,comp:'Ligue des Nations'}],goals1h:[1,2,1,2,1,0,2,1,1,2,0,1,2,1,1,0,2,1,1,2],goals2h:[2,1,2,1,2,1,0,2,1,1,2,1,0,2,1,2,1,1,2,1],players:{home:[{name:'K. Mbappé',pos:'ATT',status:'ok',goals:59,cap:99},{name:'O. Dembélé',pos:'ATT',status:'ok',goals:9,cap:41},{name:'A. Tchouaméni',pos:'MIL',status:'ok',goals:8,cap:48},{name:'M. Maignan',pos:'GK',status:'ok',goals:0,cap:38}],away:[{name:'L. Yamal',pos:'ATT',status:'ok',goals:5,cap:33},{name:'M. Merino',pos:'MIL',status:'ok',goals:3,cap:29},{name:'Rodri',pos:'MIL',status:'ok',goals:2,cap:56},{name:'U. Simón',pos:'GK',status:'ok',goals:0,cap:39}]}}
 };
 var __matchCache={};
 
@@ -766,12 +779,10 @@ var MATCHES=[
 
 /* ===== PHASE ÉLIMINATOIRE — SCORES RÉELS MIS À JOUR ===== */
 var ELIM_MATCHES=[
-  /* 16es de finale — tous terminés */
+  /* 32es de finale — tous terminés */
   {id:2001,phase:'16es',date:'2026-06-28',heure:'21h00',home:{name:'Afrique du Sud',flag:'🇿🇦',rank:61,form:['N','D','V','N','V']},away:{name:'Canada',flag:'🇨🇦',rank:42,form:['V','V','N','D','V']},stade:'SoFi Stadium, Los Angeles',xgH:1.0,xgA:1.8,score:{home:0,away:1}},
   {id:2002,phase:'16es',date:'2026-06-29',heure:'19h00',home:{name:'Brésil',flag:'🇧🇷',rank:5,form:['V','V','V','V','N']},away:{name:'Japon',flag:'🇯🇵',rank:18,form:['V','D','V','V','N']},stade:'NRG Stadium, Houston',xgH:2.3,xgA:1.2,score:{home:2,away:1}},
-  // Allemagne 1-1 ap, 3-4 tab Paraguay
   {id:2003,phase:'16es',date:'2026-06-29',heure:'22h30',home:{name:'Allemagne',flag:'🇩🇪',rank:12,form:['V','N','V','V','V']},away:{name:'Paraguay',flag:'🇵🇾',rank:55,form:['D','V','N','D','D']},stade:'Gillette Stadium, Boston',xgH:2.4,xgA:0.9,score:{home:1,away:1},note:'TAB 3-4 - Paraguay qualifié'},
-  // Pays-Bas 1-1 ap, 2-3 tab Maroc
   {id:2004,phase:'16es',date:'2026-06-30',heure:'03h00',home:{name:'Pays-Bas',flag:'🇳🇱',rank:7,form:['V','V','V','N','V']},away:{name:'Maroc',flag:'🇲🇦',rank:14,form:['V','N','V','D','V']},stade:'Estadio BBVA, Monterrey',xgH:1.9,xgA:1.5,score:{home:1,away:1},note:'TAB 2-3 - Maroc qualifié'},
   {id:2005,phase:'16es',date:'2026-06-30',heure:'19h00',home:{name:"Côte d'Ivoire",flag:'🇨🇮',rank:29,form:['V','D','V','N','V']},away:{name:'Norvège',flag:'🇳🇴',rank:19,form:['V','V','V','N','V']},stade:"AT&T Stadium, Arlington",xgH:1.5,xgA:1.7,score:{home:1,away:2}},
   {id:2006,phase:'16es',date:'2026-06-30',heure:'23h00',home:{name:'France',flag:'🇫🇷',rank:2,form:['V','V','V','V','V']},away:{name:'Suède',flag:'🇸🇪',rank:25,form:['V','N','V','D','V']},stade:'MetLife Stadium, New York',xgH:2.6,xgA:1.0,score:{home:3,away:0}},
@@ -782,12 +793,10 @@ var ELIM_MATCHES=[
   {id:2011,phase:'16es',date:'2026-07-02',heure:'21h00',home:{name:'Espagne',flag:'🇪🇸',rank:6,form:['V','V','V','V','V']},away:{name:'Autriche',flag:'🇦🇹',rank:26,form:['V','V','N','V','D']},stade:'SoFi Stadium, Los Angeles',xgH:2.6,xgA:1.1,score:{home:3,away:0}},
   {id:2012,phase:'16es',date:'2026-07-03',heure:'01h00',home:{name:'Portugal',flag:'🇵🇹',rank:6,form:['V','V','V','V','N']},away:{name:'Croatie',flag:'🇭🇷',rank:10,form:['V','D','V','N','V']},stade:'BMO Field, Toronto',xgH:2.0,xgA:1.5,score:{home:2,away:1}},
   {id:2013,phase:'16es',date:'2026-07-03',heure:'05h00',home:{name:'Suisse',flag:'🇨🇭',rank:22,form:['V','V','N','V','V']},away:{name:'Algérie',flag:'🇩🇿',rank:30,form:['V','N','V','D','V']},stade:'BC Place, Vancouver',xgH:1.9,xgA:1.4,score:{home:2,away:0}},
-  // Argentine 3-2 ap Cap-Vert
   {id:2015,phase:'16es',date:'2026-07-04',heure:'00h00',home:{name:'Argentine',flag:'🇦🇷',rank:1,form:['V','V','V','V','V']},away:{name:'Cap-Vert',flag:'🇨🇻',rank:71,form:['V','N','D','V','N']},stade:'Hard Rock Stadium, Miami',xgH:2.9,xgA:0.6,score:{home:3,away:2},note:'a.p.'},
-  // Australie 1-1 ap, 2-4 tab Égypte
   {id:2014,phase:'16es',date:'2026-07-03',heure:'20h00',home:{name:'Australie',flag:'🇦🇺',rank:24,form:['V','N','V','D','V']},away:{name:'Égypte',flag:'🇪🇬',rank:35,form:['V','D','N','V','N']},stade:"AT&T Stadium, Arlington",xgH:1.5,xgA:1.4,score:{home:1,away:1},note:'TAB 2-4 - Égypte qualifiée'},
   {id:2016,phase:'16es',date:'2026-07-04',heure:'03h30',home:{name:'Colombie',flag:'🇨🇴',rank:13,form:['V','V','N','V','V']},away:{name:'Ghana',flag:'🇬🇭',rank:52,form:['V','N','D','V','N']},stade:'Arrowhead Stadium, Kansas City',xgH:2.1,xgA:1.1,score:{home:1,away:0}},
-  /* 8es de finale — tous terminés */
+  /* 16es de finale — tous terminés */
   {id:3001,phase:'8es',date:'2026-07-04',heure:'19h00',home:{name:'Paraguay',flag:'🇵🇾',rank:55,form:['D','V','N','D','D']},away:{name:'France',flag:'🇫🇷',rank:2,form:['V','V','V','V','V']},stade:'Lincoln Financial Field, Philadelphie',xgH:0.8,xgA:2.4,score:{home:0,away:1}},
   {id:3002,phase:'8es',date:'2026-07-04',heure:'12h00',home:{name:'Canada',flag:'🇨🇦',rank:42,form:['V','V','N','D','V']},away:{name:'Maroc',flag:'🇲🇦',rank:14,form:['V','N','V','D','V']},stade:'NRG Stadium, Houston',xgH:1.5,xgA:1.7,score:{home:0,away:3}},
   {id:3003,phase:'8es',date:'2026-07-05',heure:'22h00',home:{name:'Brésil',flag:'🇧🇷',rank:5,form:['V','V','V','V','N']},away:{name:'Norvège',flag:'🇳🇴',rank:19,form:['V','V','V','N','V']},stade:'MetLife Stadium, New York',xgH:2.0,xgA:1.4,score:{home:1,away:2}},
@@ -795,21 +804,17 @@ var ELIM_MATCHES=[
   {id:3005,phase:'8es',date:'2026-07-06',heure:'21h00',home:{name:'Portugal',flag:'🇵🇹',rank:6,form:['V','V','V','V','N']},away:{name:'Espagne',flag:'🇪🇸',rank:6,form:['V','V','V','V','V']},stade:"AT&T Stadium, Arlington",xgH:2.0,xgA:1.8,score:{home:0,away:1}},
   {id:3006,phase:'8es',date:'2026-07-07',heure:'02h00',home:{name:'États-Unis',flag:'🇺🇸',rank:11,form:['V','V','V','N','V']},away:{name:'Belgique',flag:'🇧🇪',rank:3,form:['V','V','V','N','V']},stade:'Lumen Field, Seattle',xgH:1.8,xgA:1.5,score:{home:1,away:4}},
   {id:3007,phase:'8es',date:'2026-07-07',heure:'18h00',home:{name:'Argentine',flag:'🇦🇷',rank:1,form:['V','V','V','V','V']},away:{name:'Égypte',flag:'🇪🇬',rank:35,form:['V','D','N','V','N']},stade:'Mercedes-Benz Stadium, Atlanta',xgH:1.0,xgA:2.3,score:{home:3,away:2}},
-  // Suisse 0-0 ap, 4-3 tab Colombie
   {id:3008,phase:'8es',date:'2026-07-07',heure:'22h00',home:{name:'Suisse',flag:'🇨🇭',rank:22,form:['V','V','N','V','V']},away:{name:'Colombie',flag:'🇨🇴',rank:13,form:['V','V','N','V','V']},stade:'BC Place, Vancouver',xgH:1.6,xgA:1.7,score:{home:0,away:0},note:'TAB 4-3 - Suisse qualifiée'},
-  /* QUARTS DE FINALE */
-  {id:4001,phase:'quarts',date:'2026-07-09',heure:'22h00',home:{name:'France',flag:'🇫🇷',rank:2,form:['V','V','V','V','V']},away:{name:'Maroc',flag:'🇲🇦',rank:14,form:['V','N','V','D','V']},stade:'Gillette Stadium, Boston',xgH:2.2,xgA:1.1,score:{home:2,away:0}},
-  // Espagne vs Belgique — EN COURS (match du 10 juillet)
-  {id:4002,phase:'quarts',date:'2026-07-10',heure:'22h00',home:{name:'Espagne',flag:'🇪🇸',rank:6,form:['V','V','V','V','V']},away:{name:'Belgique',flag:'🇧🇪',rank:3,form:['V','V','V','N','V']},stade:'SoFi Stadium, Los Angeles',xgH:2.1,xgA:1.3,score:{home:0,away:0},note:'En cours'},
-  // À venir — 11 juillet
-  {id:4003,phase:'quarts',date:'2026-07-11',heure:'23h00',home:{name:'Norvège',flag:'🇳🇴',rank:19,form:['V','V','V','N','V']},away:{name:'Angleterre',flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',rank:4,form:['V','V','N','V','V']},stade:'Hard Rock Stadium, Miami',xgH:1.4,xgA:1.9},
-  // À venir — 12 juillet
-  {id:4004,phase:'quarts',date:'2026-07-12',heure:'03h00',home:{name:'Argentine',flag:'🇦🇷',rank:1,form:['V','V','V','V','V']},away:{name:'Suisse',flag:'🇨🇭',rank:22,form:['V','V','N','V','V']},stade:'Arrowhead Stadium, Kansas City',xgH:2.2,xgA:1.1},
+  /* QUARTS DE FINALE — tous terminés */
+  {id:4001,phase:'quarts',date:'2026-07-09',heure:'22h00',home:{name:'France',flag:'🇫🇷',rank:2,form:['V','V','V','V','V']},away:{name:'Maroc',flag:'🇲🇦',rank:14,form:['V','N','V','D','V']},stade:'Gillette Stadium, Boston',xgH:3.04,xgA:0.14,score:{home:2,away:0}},
+  {id:4002,phase:'quarts',date:'2026-07-10',heure:'21h00',home:{name:'Espagne',flag:'🇪🇸',rank:6,form:['V','V','V','V','V']},away:{name:'Belgique',flag:'🇧🇪',rank:3,form:['V','V','V','N','D']},stade:'SoFi Stadium, Los Angeles',xgH:2.08,xgA:0.38,score:{home:2,away:1}},
+  {id:4003,phase:'quarts',date:'2026-07-11',heure:'23h00',home:{name:'Norvège',flag:'🇳🇴',rank:19,form:['V','V','V','N','D']},away:{name:'Angleterre',flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',rank:4,form:['V','V','N','V','V']},stade:'Hard Rock Stadium, Miami',xgH:0.77,xgA:0.96,score:{home:1,away:2},note:'a.p.'},
+  {id:4004,phase:'quarts',date:'2026-07-12',heure:'03h00',home:{name:'Argentine',flag:'🇦🇷',rank:1,form:['V','V','V','V','D']},away:{name:'Suisse',flag:'🇨🇭',rank:22,form:['V','V','N','V','D']},stade:'Arrowhead Stadium, Kansas City',xgH:2.2,xgA:1.1,score:{home:3,away:1},note:'a.p.'},
   /* DEMI-FINALES */
-  {id:5001,phase:'demis',date:'2026-07-14',heure:'21h00',home:{name:'France',flag:'🇫🇷',rank:2,form:['V','V','V','V','V']},away:{name:'V Quart 2',flag:'❓',rank:0,form:['V','V','V','V','V']},stade:"AT&T Stadium, Dallas",xgH:2.0,xgA:1.4},
-  {id:5002,phase:'demis',date:'2026-07-15',heure:'21h00',home:{name:'V Quart 3',flag:'❓',rank:0,form:['V','V','V','V','V']},away:{name:'V Quart 4',flag:'❓',rank:0,form:['V','V','V','V','V']},stade:'Mercedes-Benz Stadium, Atlanta',xgH:1.8,xgA:1.8},
+  {id:5001,phase:'demis',date:'2026-07-14',heure:'21h00',home:{name:'France',flag:'🇫🇷',rank:2,form:['V','V','V','V','V']},away:{name:'Espagne',flag:'🇪🇸',rank:6,form:['V','V','V','V','V']},stade:"AT&T Stadium, Arlington (Dallas)",xgH:1.9,xgA:1.7},
+  {id:5002,phase:'demis',date:'2026-07-15',heure:'21h00',home:{name:'Angleterre',flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',rank:4,form:['V','V','N','V','V']},away:{name:'Argentine',flag:'🇦🇷',rank:1,form:['V','V','V','V','D']},stade:'Mercedes-Benz Stadium, Atlanta',xgH:1.5,xgA:1.8},
   /* PETITE FINALE */
-  {id:6001,phase:'finale',date:'2026-07-18',heure:'23h00',home:{name:'3e place',flag:'❓',rank:0,form:['V','V','V','V','V']},away:{name:'4e place',flag:'❓',rank:0,form:['V','V','V','V','V']},stade:'Hard Rock Stadium, Miami',xgH:1.8,xgA:1.8},
+  {id:6001,phase:'finale',date:'2026-07-18',heure:'23h00',home:{name:'Perdant demi 1',flag:'❓',rank:0,form:['V','V','V','V','V']},away:{name:'Perdant demi 2',flag:'❓',rank:0,form:['V','V','V','V','V']},stade:'Hard Rock Stadium, Miami',xgH:1.8,xgA:1.8},
   /* FINALE */
   {id:7001,phase:'finale',date:'2026-07-19',heure:'21h00',home:{name:'Finaliste 1',flag:'❓',rank:0,form:['V','V','V','V','V']},away:{name:'Finaliste 2',flag:'❓',rank:0,form:['V','V','V','V','V']},stade:'MetLife Stadium, New York',xgH:1.8,xgA:1.8}
 ];
@@ -880,8 +885,8 @@ function renderMatchList(filterGrp,view){
   var source=getActiveMatches();
   var all=source.filter(function(m){
     if(!filterGrp)return true;
-    if(filterGrp==='16es')return m.phase==='16es';
-    if(filterGrp==='8es')return m.phase==='8es';
+    if(filterGrp==='32es')return m.phase==='16es';
+    if(filterGrp==='16es')return m.phase==='8es';
     if(filterGrp==='quarts')return m.phase==='quarts';
     if(filterGrp==='demis')return m.phase==='demis';
     if(filterGrp==='finale')return m.phase==='finale';
@@ -895,7 +900,7 @@ function renderMatchList(filterGrp,view){
   function renderItem(m){
     var status=getMatchStatus(m),center,meta,ct=wasCorrect(m),ctag='';
     if(status==='finished'&&ct!==null)ctag=ct?' <span class="mi-tag mi-tag-correct">✓</span>':' <span class="mi-tag mi-tag-wrong">✗</span>';
-    var phaseLabel=m.phase==='16es'?'16es':m.phase==='8es'?'8es':m.phase==='quarts'?'Quarts':m.phase==='demis'?'Demis':m.phase==='finale'?'Finale':'';
+    var phaseLabel=m.phase==='16es'?'32es':m.phase==='8es'?'16es':m.phase==='quarts'?'Quarts':m.phase==='demis'?'Demis':m.phase==='finale'?'Finale':'';
     var grpTag=phaseLabel?' <span class="mi-grp">'+phaseLabel+'</span>':(m.groupe?' <span class="mi-grp">'+m.groupe+'</span>':'');
     var scoreLabel=m.score?(m.score.home+' – '+m.score.away+(m.note?(' '+m.note):'')):'';
     if(status==='finished'&&m.score){center='<span class="mi-score">'+scoreLabel+'</span>';meta=fmtDate(m.date)+' <span class="mi-tag mi-tag-end">Fin</span>'+ctag;}
@@ -979,7 +984,7 @@ function showMatch(id,isRefresh){
       }).join('')+'</div>';
   }).join('');
   var status=getMatchStatus(m),centerHtml,predBadge='';
-  var phaseLabel=m.phase==='16es'?'16es de finale':m.phase==='8es'?'8es de finale':m.phase==='quarts'?'Quart de finale':m.phase==='demis'?'Demi-finale':m.phase==='finale'?'Finale':(m.groupe?'Groupe '+m.groupe:'');
+  var phaseLabel=m.phase==='16es'?'32es de finale':m.phase==='8es'?'16es de finale':m.phase==='quarts'?'Quart de finale':m.phase==='demis'?'Demi-finale':m.phase==='finale'?'Finale':(m.groupe?'Groupe '+m.groupe:'');
   if(m.score&&status!=='live'){
     var scoreDisplay=m.score.home+' – '+m.score.away+(m.note?' ('+m.note+')':'');
     var pred=predictedOutcome(m),act=actualOutcome(m.score),predLabel=pred==='home_win'?m.home.name+' vainqueur':pred==='draw'?'Nul':m.away.name+' vainqueur';
@@ -988,7 +993,7 @@ function showMatch(id,isRefresh){
   } else if(status==='live'){
     centerHtml='<div class="mh-vs">vs</div><div class="mh-status mh-status-live">● En cours</div><div class="mh-info">'+m.stade+'</div>';
   } else {
-    centerHtml='<div class="mh-vs">vs</div><div class="mh-info">'+fmtDate(m.date)+' · '+m.heure+'<br>'+m.stade+(phaseLabel?'<br>'+phaseLabel:'')+'</div>';
+    centerHtml='<div class="mh-vs">vs</div><div class="mh-info">'+fmtDate(m.date)+' · '+m.heure+' (heure de Paris)<br>'+m.stade+(phaseLabel?'<br>'+phaseLabel:'')+'</div>';
   }
   var pHW=paris[0].pct,pDR=paris[1].pct,pAW=paris[2].pct;
   var probBarHtml='<div class="prob-bar-wrap"><div class="prob-bar-label">Probabilités (Poisson)</div>'+
@@ -1066,7 +1071,7 @@ function buildPerfPage(){
     paris.forEach(function(b){if(b.type&&betTypes[b.type]){betTypes[b.type].t++;if(getPredOutcome(b,m.score))betTypes[b.type].c++;}});
     var exactOk=exactScoreHit(m);if(exactOk)exactHits++;
     totalGoals+=m.score.home+m.score.away;
-    var grpLbl=m.phase==='16es'?'16es':m.phase==='8es'?'8es':m.phase==='quarts'?'Quarts':m.phase==='demis'?'Demis':m.phase==='finale'?'Finale':(m.groupe||'');
+    var grpLbl=m.phase==='16es'?'32es':m.phase==='8es'?'16es':m.phase==='quarts'?'Quarts':m.phase==='demis'?'Demis':m.phase==='finale'?'Finale':(m.groupe||'');
     matchRows.push({m:m,ok:ok,exactOk:exactOk,pred:pred==='home_win'?m.home.flag+' '+m.home.name:pred==='draw'?'Nul':m.away.flag+' '+m.away.name,leadPct:leadPct,darkBlueCount:countDarkBlueScores(m),grpLbl:grpLbl});
   });
   var acc=Math.round(correct1X2/total*100),upsets=total-correct1X2,exactAcc=Math.round(exactHits/total*100);
@@ -1079,20 +1084,24 @@ function buildPerfPage(){
     return'<tr><td><span class="rt-grp">'+r.grpLbl+'</span></td><td class="rt-teams">'+m.home.flag+' '+m.home.name+' vs '+m.away.flag+' '+m.away.name+'</td><td class="rt-score">'+m.score.home+'–'+m.score.away+'</td><td style="font-size:11px;color:var(--ink3)">'+r.pred+'<br><span style="font-size:10px">Confiance '+r.leadPct+'%</span></td><td><span class="rt-hit '+(r.ok?'yes':'no')+'">'+(r.ok?'✓ Correct':'✗ Raté')+'</span> '+exactTag+'</td></tr>';
   }).join('');
   document.getElementById('perf-content').innerHTML=
-    '<div class="page-header"><div class="page-title">Performance du modèle</div><div class="page-sub">Précision des prédictions Poisson · '+total+' matchs disputés</div></div>'+
-    '<div class="perf-kpi-row"><div class="perf-kpi blue"><div class="perf-kpi-val">'+total+'</div><div class="perf-kpi-lbl">Matchs analysés</div></div><div class="perf-kpi slate"><div class="perf-kpi-val">'+acc+'%</div><div class="perf-kpi-lbl">Précision 1X2</div></div><div class="perf-kpi amber"><div class="perf-kpi-val">'+avgGoals+'</div><div class="perf-kpi-lbl">Buts/match moy.</div></div><div class="perf-kpi purple"><div class="perf-kpi-val">'+exactAcc+'%</div><div class="perf-kpi-lbl">Score exact trouvé</div></div></div>'+
-    '<div class="perf-tabs"><button class="perf-tab active" data-ptab="overview" onclick="switchPerfTab(\'overview\')">Vue d\'ensemble</button><button class="perf-tab" data-ptab="exact" onclick="switchPerfTab(\'exact\')">Score exact</button><button class="perf-tab" data-ptab="matchs" onclick="switchPerfTab(\'matchs\')">Match par match</button></div>'+
+    '<div class="page-header"><div class="page-title">Performance du modèle</div><div class="page-sub">Précision des prédictions Poisson sur '+total+' matchs disputés à la Coupe du Monde 2026</div></div>'+
+    '<div class="perf-hero"><div class="perf-hero-stat"><div class="perf-hero-num">'+exactHits+'</div><div class="perf-hero-stat-lbl">Scores exacts trouvés</div></div>'+
+      '<div class="perf-hero-text"><div class="perf-hero-title">⭐ Ce qui distingue SporTiser</div><div class="perf-hero-sub">Sur '+total+' matchs joués, notre modèle a identifié le score exact dans sa zone de forte probabilité à '+exactHits+' reprise'+(exactHits>1?'s':'')+' ('+exactAcc+'%) — bien au-delà d\'un simple pronostic 1X2. C\'est notre matrice de scores qui fait la différence.</div></div></div>'+
+    '<div class="perf-kpi-row"><div class="perf-kpi purple"><div class="perf-kpi-val">'+exactAcc+'%</div><div class="perf-kpi-lbl">Score exact trouvé</div></div><div class="perf-kpi blue"><div class="perf-kpi-val">'+total+'</div><div class="perf-kpi-lbl">Matchs analysés</div></div><div class="perf-kpi slate"><div class="perf-kpi-val">'+acc+'%</div><div class="perf-kpi-lbl">Précision 1X2</div></div><div class="perf-kpi amber"><div class="perf-kpi-val">'+avgGoals+'</div><div class="perf-kpi-lbl">Buts/match moy.</div></div></div>'+
+    '<div class="perf-tabs"><button class="perf-tab active" data-ptab="overview" onclick="switchPerfTab(\'overview\')">Score exact</button><button class="perf-tab" data-ptab="exact" onclick="switchPerfTab(\'exact\')">Détail scores</button><button class="perf-tab" data-ptab="matchs" onclick="switchPerfTab(\'matchs\')">Match par match</button></div>'+
     '<div id="perf-tab-overview">'+
-      '<div class="perf-section"><div class="perf-section-head"><span class="perf-section-title">Précision 1X2</span><span class="perf-section-badge '+(acc>=60?'badge-green':acc>=45?'badge-amber':'badge-red')+'">'+(acc>=60?'Bon calibrage':acc>=45?'Correct':'À améliorer')+'</span></div>'+
+      '<div class="perf-section"><div class="perf-section-head"><span class="perf-section-title">Score exact — l\'avantage SporTiser</span><span class="perf-section-badge badge-purple">'+exactHits+' / '+total+'</span></div>'+
+      '<div class="exact-summary"><div class="exact-donut">'+donut(exactAcc,'var(--purple)',40,50,50)+'<div class="exact-donut-center"><span class="exact-donut-pct">'+exactAcc+'%</span><span class="exact-donut-sub">Réussite</span></div></div>'+
+      '<div class="exact-summary-text">Contrairement à un simple pronostic « qui gagne », notre matrice de scores (onglet <b>Paris</b> de chaque match) affiche les scores les plus probables selon le modèle de Poisson. Sur les <b>'+total+' matchs</b> disputés, le score final est tombé dans une case à forte probabilité <b>'+exactHits+' fois</b> ('+exactAcc+'%) — l\'avantage le plus concret que peut offrir un modèle statistique.</div></div></div>'+
+      '<div class="perf-section"><div class="perf-section-head"><span class="perf-section-title">Précision 1X2 (qui gagne)</span><span class="perf-section-badge '+(acc>=60?'badge-green':acc>=45?'badge-amber':'badge-red')+'">'+(acc>=60?'Bon calibrage':acc>=45?'Correct':'À améliorer')+'</span></div>'+
         '<div class="gauge-row"><div class="gauge-donut">'+donut(acc,'var(--blue)',40,50,50)+'<div class="gauge-center"><span class="gauge-pct">'+acc+'%</span><span class="gauge-sub">Précis</span></div></div>'+
         '<div class="gauge-legend"><div class="gauge-leg-item"><div class="gauge-leg-dot" style="background:var(--blue)"></div><span class="gauge-leg-lbl">Correctes</span><span class="gauge-leg-val">'+correct1X2+'</span></div>'+
         '<div class="gauge-leg-item"><div class="gauge-leg-dot" style="background:var(--red)"></div><span class="gauge-leg-lbl">Ratées</span><span class="gauge-leg-val">'+upsets+'</span></div>'+
         '<div class="gauge-leg-item"><div class="gauge-leg-dot" style="background:var(--amber)"></div><span class="gauge-leg-lbl">Conf. moy. quand raté</span><span class="gauge-leg-val">'+avgConfWhenWrong+'</span></div></div></div></div>'+
       '<div class="perf-section"><div class="perf-section-head"><span class="perf-section-title">Précision par type de pari</span></div><div class="acc-table">'+accRows+'</div></div>'+
     '</div>'+
-    '<div id="perf-tab-exact" style="display:none"><div class="perf-section"><div class="perf-section-head"><span class="perf-section-title">Scores exacts trouvés</span><span class="perf-section-badge badge-purple">'+exactHits+' / '+total+'</span></div>'+
-      '<div class="exact-summary"><div class="exact-donut">'+donut(exactAcc,'var(--purple)',40,50,50)+'<div class="exact-donut-center"><span class="exact-donut-pct">'+exactAcc+'%</span><span class="exact-donut-sub">Réussite</span></div></div>'+
-      '<div class="exact-summary-text">Sur les <b>'+total+' matchs</b> disputés, le modèle a trouvé le score exact à <b>'+exactHits+' reprise'+(exactHits>1?'s':'')+'</b> ('+exactAcc+'%). Un score est trouvé lorsqu\'il correspond à une case bleue foncée de la matrice.</div></div>'+
+    '<div id="perf-tab-exact" style="display:none"><div class="perf-section"><div class="perf-section-head"><span class="perf-section-title">Détail des scores exacts</span><span class="perf-section-badge badge-purple">'+exactHits+' / '+total+'</span></div>'+
+      '<div style="padding:12px 16px 4px;font-size:12px;color:var(--ink2);line-height:1.6">Un score est considéré « trouvé » lorsque le score final correspond à une case bleue foncée de la matrice (probabilité > 65% du pic).</div>'+
       '<div style="overflow-x:auto;padding:0 0 4px"><table class="result-table"><thead><tr><th>Phase</th><th>Match</th><th>Score réel</th><th>Cases bleues</th><th>Trouvé ?</th></tr></thead><tbody>'+
         matchRows.slice().sort(function(a,b){return b.m.date.localeCompare(a.m.date);}).map(function(r){var m=r.m;return'<tr><td><span class="rt-grp">'+r.grpLbl+'</span></td><td class="rt-teams">'+m.home.flag+' '+m.home.name+' vs '+m.away.flag+' '+m.away.name+'</td><td class="rt-score">'+m.score.home+'–'+m.score.away+'</td><td style="font-size:11px;color:var(--ink3)">'+r.darkBlueCount+'</td><td>'+(r.exactOk?'<span class="rt-hit exact">⭐ Oui</span>':'<span class="rt-hit no">✗ Non</span>')+'</td></tr>';}).join('')+
       '</tbody></table></div></div></div>'+
