@@ -39,14 +39,16 @@ nav{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(255,255,255,
   background:var(--bg);
   position:relative;overflow:hidden;
 }
+/* --- LE BALLON (À DROITE — +10% ET CENTRAGE PARFAIT) --- */
 .hero::before {
   content: '';
   position: absolute;
-  top: 10%; 
+  /* Centrage vertical absolu */
+  top: 50%; 
   right: -5%; 
-  /* Dimensions réduites de 20% supplémentaires */
-  width: 57vw; 
-  max-width: 640px; 
+  /* Taille augmentée de 10% */
+  width: 63vw; 
+  max-width: 704px; 
   aspect-ratio: 1;
   background-image: url('ballon_foot.png');
   background-size: cover; 
@@ -54,18 +56,19 @@ nav{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(255,255,255,
   background-position: center;
   opacity: 0.04; 
   filter: grayscale(100%);
-  transform: rotate(10deg);
+  /* Aligne le centre du ballon sur l'axe des 50% et applique la rotation */
+  transform: translateY(-50%) rotate(10deg);
   z-index: 0; 
   pointer-events: none;
   mix-blend-mode: multiply;
 }
 
-/* --- LE JOUEUR DE FOOT (À GAUCHE — PLUS VISIBLE ET DÉCALÉ) --- */
+/* --- LE JOUEUR DE FOOT (À GAUCHE — ALIGNEMENT PARFAIT SUR LE BALLON) --- */
 .hero::after {
   content: '';
   position: absolute;
-  top: 10%; 
-  /* Décalé d'environ 3cm vers la gauche pour sortir de l'écran */
+  /* Centrage vertical absolu (identique au ballon) */
+  top: 50%; 
   left: -15%; 
   width: 90vw; 
   max-width: 900px; 
@@ -74,9 +77,10 @@ nav{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(255,255,255,
   background-size: contain; 
   background-repeat: no-repeat;
   background-position: center left;
-  /* Opacité augmentée pour être plus visible */
   opacity: 0.09; 
   filter: grayscale(100%);
+  /* Aligne le centre du joueur sur le même axe vertical que le ballon */
+  transform: translateY(-50%);
   z-index: 0;
   pointer-events: none;
   mix-blend-mode: multiply;
@@ -85,7 +89,7 @@ nav{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(255,255,255,
 /* --- LE TEXTE (DEVANT LES DEUX IMAGES) --- */
 .hero-content {
   position: relative;
-  z-index: 2; /* Force le texte et la matrice à passer au-dessus des images */
+  z-index: 2; 
   display: flex;
   flex-direction: column;
   align-items: center;
