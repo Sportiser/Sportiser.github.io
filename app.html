@@ -478,44 +478,7 @@ details[open] .faq-chevron{transform:rotate(180deg)}
       <div class="page-title">Ligues & compétitions</div>
       <div class="page-sub">SporTiser couvre le football mondial. Sélectionne une compétition pour accéder aux analyses.</div>
     </div>
-    <div class="ligues-grid">
-      <div class="ligue-card active-ligue" onclick="switchPage('matchs')">
-        <div class="ligue-flag">🌍</div>
-        <div class="ligue-name">Coupe du Monde</div>
-        <div class="ligue-country">FIFA · USA / Canada / Mexique 2026</div>
-        <span class="ligue-badge badge-live-now">En cours · Demi-finales</span>
-      </div>
-      <div class="ligue-card">
-        <div class="ligue-flag">⭐</div>
-        <div class="ligue-name">Champions League</div>
-        <div class="ligue-country">UEFA · Europe</div>
-        <span class="ligue-badge badge-coming">Saison 26/27 bientôt</span>
-      </div>
-      <div class="ligue-card">
-        <div class="ligue-flag">🏴󠁧󠁢󠁥󠁮󠁧󠁿</div>
-        <div class="ligue-name">Premier League</div>
-        <div class="ligue-country">Angleterre · 20 clubs</div>
-        <span class="ligue-badge badge-coming">Saison 26/27 bientôt</span>
-      </div>
-      <div class="ligue-card">
-        <div class="ligue-flag">🇪🇸</div>
-        <div class="ligue-name">La Liga</div>
-        <div class="ligue-country">Espagne · 20 clubs</div>
-        <span class="ligue-badge badge-coming">Bientôt</span>
-      </div>
-      <div class="ligue-card">
-        <div class="ligue-flag">🇩🇪</div>
-        <div class="ligue-name">Bundesliga</div>
-        <div class="ligue-country">Allemagne · 18 clubs</div>
-        <span class="ligue-badge badge-coming">Bientôt</span>
-      </div>
-      <div class="ligue-card">
-        <div class="ligue-flag">🇮🇹</div>
-        <div class="ligue-name">Serie A</div>
-        <div class="ligue-country">Italie · 20 clubs</div>
-        <span class="ligue-badge badge-coming">Bientôt</span>
-      </div>
-    </div>
+    <div class="ligues-grid" id="ligues-grid"></div>
     <div class="comingsoon-note">
       <p>Les analyses Poisson pour la Premier League, la Liga, la Bundesliga et la Serie A arriveront avant le début de la saison 2026/2027. Envoie un email à <a href="mailto:sportiser.app@gmail.com" style="color:var(--blue)">sportiser.app@gmail.com</a> pour être notifié en priorité.</p>
     </div>
@@ -672,6 +635,28 @@ async function forceCheckPremium(){
 }
 function openStripe(plan){var checks=0;var pollId=setInterval(async function(){checks++;await checkPremiumAfterPayment();if(IS_PREMIUM||checks>=60)clearInterval(pollId);},5000);window.open(STRIPE_LINKS[plan]+'?prefilled_email='+encodeURIComponent(currentUser.email),'_blank');}
 
+/* ================================================================
+   REGISTRE DES COMPÉTITIONS
+   Chaque entrée = une compétition sélectionnable depuis la page "Ligues".
+   status : 'live'     -> compétition en cours, cliquable, vue normale
+            'archived' -> compétition terminée, cliquable, lecture seule
+                          (mêmes écrans, vue par défaut sur "Passés")
+            'coming'   -> pas encore de données, carte visible mais non cliquable
+   Pour ajouter une compétition plus tard : ajouter une entrée ici + une
+   entrée correspondante dans COMPETITION_STORE plus bas. Le reste du site
+   (sidebar, fiche match, filtres, onglets) s'adapte automatiquement.
+   ================================================================ */
+var COMPETITIONS=[
+  {id:'cdm2026',icon:'🌍',name:'Coupe du Monde 2026',country:'FIFA · USA / Canada / Mexique',status:'live',badgeLabel:'En cours · Demi-finales'},
+  {id:'ucl2627',icon:'⭐',name:'Champions League',country:'UEFA · Europe',status:'coming',badgeLabel:'Saison 26/27 bientôt'},
+  {id:'epl2627',icon:'🏴',name:'Premier League',country:'Angleterre · 20 clubs',status:'coming',badgeLabel:'Saison 26/27 bientôt'},
+  {id:'laliga2627',icon:'🇪🇸',name:'La Liga',country:'Espagne · 20 clubs',status:'coming',badgeLabel:'Bientôt'},
+  {id:'bundesliga2627',icon:'🇩🇪',name:'Bundesliga',country:'Allemagne · 18 clubs',status:'coming',badgeLabel:'Bientôt'},
+  {id:'seriea2627',icon:'🇮🇹',name:'Serie A',country:'Italie · 20 clubs',status:'coming',badgeLabel:'Bientôt'}
+];
+var __currentCompetitionId='cdm2026';
+function getCompetition(id){return COMPETITIONS.find(function(c){return c.id===id;});}
+
 /* ===== DONNÉES MATCHS — SCORES MIS À JOUR 14 JUILLET 2026 (avant demi France-Espagne) ===== */
 var MATCH_DATA={
   1:{stats:{possession:[55,45],tirs:[13,9],corners:[5,4],fautes:[9,14],xG:[1.8,1.1]},h2h:[{date:'Nov 2022',home:'Canada',away:'Bosnie',sh:1,sa:1,comp:'Amical'}],goals1h:[2,1,1,0,2,1,0,1,2,0,1,2,1,0,1,1,2,0,1,2],goals2h:[1,2,1,2,0,1,3,1,0,2,1,0,2,1,1,2,1,1,0,1],players:{home:[{name:'A. Davies',pos:'DEF',status:'ok',goals:3,cap:62},{name:'J. David',pos:'ATT',status:'ok',goals:18,cap:45},{name:'C. Larin',pos:'ATT',status:'ok',goals:24,cap:68},{name:'T. Hoilett',pos:'MIL',status:'dout',goals:5,cap:89}],away:[{name:'E. Džeko',pos:'ATT',status:'ok',goals:63,cap:127},{name:'M. Pjanić',pos:'MIL',status:'inj',goals:16,cap:110},{name:'S. Kolasinac',pos:'DEF',status:'ok',goals:5,cap:62},{name:'A. Begović',pos:'GK',status:'ok',goals:0,cap:70}]}},
@@ -819,17 +804,46 @@ var ELIM_MATCHES=[
   {id:7001,phase:'finale',date:'2026-07-19',heure:'21h00',home:{name:'Finaliste 1',flag:'❓',rank:0,form:['V','V','V','V','V']},away:{name:'Finaliste 2',flag:'❓',rank:0,form:['V','V','V','V','V']},stade:'MetLife Stadium, New York',xgH:1.8,xgA:1.8}
 ];
 
-var ALL_MATCHES=MATCHES.concat(ELIM_MATCHES);
-function getActiveMatches(){return ALL_MATCHES;}
+/* ================================================================
+   COUCHE D'ADAPTATEUR DE DONNÉES
+   -----------------------------------------------------------------
+   COMPETITION_STORE regroupe, par compétition, la liste des matchs et
+   leurs détails (stats/joueurs/H2H). Aujourd'hui tout est statique
+   (mock). Le jour où l'abonnement à l'API sportive est pris, il suffit
+   de réécrire les 2 fonctions de DataSource (getMatches / getMatchDetail)
+   pour qu'elles fassent un fetch() + mapping vers ce même format —
+   aucune autre partie du code (rendu, filtres, onglets, cache, page
+   Performance...) n'a besoin de changer.
+   ================================================================ */
+var COMPETITION_STORE={
+  cdm2026:{matches:MATCHES.concat(ELIM_MATCHES),details:MATCH_DATA}
+  // Exemple pour une future compétition branchée sur l'API :
+  // ucl2627:{matches:[], details:{}}  -> alimenté par DataSource.getMatches('ucl2627')
+};
+
+var DataSource={
+  // À remplacer par un fetch() vers l'API + mapping vers le même format de match.
+  getMatches:function(compId){
+    var store=COMPETITION_STORE[compId];
+    return store?store.matches:[];
+  },
+  // À remplacer par un fetch() vers l'API (stats détaillées d'un match).
+  // Le fallback généré ci-dessous reste utile en attendant / en cas de trou de données.
+  getMatchDetail:function(compId,m){
+    var store=COMPETITION_STORE[compId];
+    var d=store&&store.details[m.id];
+    if(d)return d;
+    var xH=m.xgH||1.5,xA=m.xgA||1.2;
+    var s={possession:[Math.round(xH/(xH+xA)*100),Math.round(xA/(xH+xA)*100)],tirs:[Math.round(xH*5.5),Math.round(xA*5.5)],corners:[Math.round(xH*2.2),Math.round(xA*2.2)],fautes:[Math.round(12-xH+xA),Math.round(12-xA+xH)],xG:[xH,xA]};
+    var g1=[],g2=[];for(var i=0;i<20;i++){g1.push(Math.round((Math.sin(m.id*97+i*3.7)*10000%1+1)%1*xH*1.8));g2.push(Math.round((Math.sin(m.id*131+i*5.3)*10000%1+1)%1*xA*1.8));}
+    return{stats:s,h2h:[],goals1h:g1,goals2h:g2,players:{home:[],away:[]}};
+  }
+};
+
+function getActiveMatches(){return DataSource.getMatches(__currentCompetitionId);}
 
 function ppf(lam,k){if(k<0)return 0;var lp=-lam+k*Math.log(lam);for(var i=1;i<=k;i++)lp-=Math.log(i);return Math.exp(lp);}
-function getMatchData(m){
-  var d=MATCH_DATA[m.id];if(d)return d;
-  var xH=m.xgH||1.5,xA=m.xgA||1.2;
-  var s={possession:[Math.round(xH/(xH+xA)*100),Math.round(xA/(xH+xA)*100)],tirs:[Math.round(xH*5.5),Math.round(xA*5.5)],corners:[Math.round(xH*2.2),Math.round(xA*2.2)],fautes:[Math.round(12-xH+xA),Math.round(12-xA+xH)],xG:[xH,xA]};
-  var g1=[],g2=[];for(var i=0;i<20;i++){g1.push(Math.round((Math.sin(m.id*97+i*3.7)*10000%1+1)%1*xH*1.8));g2.push(Math.round((Math.sin(m.id*131+i*5.3)*10000%1+1)%1*xA*1.8));}
-  return{stats:s,h2h:[],goals1h:g1,goals2h:g2,players:{home:[],away:[]}};
-}
+function getMatchData(m){return DataSource.getMatchDetail(__currentCompetitionId,m);}
 function pctToOdds(pct){return(1/Math.max(1,Math.min(99,pct))*100*0.94).toFixed(2);}
 function computeParis(m,s){
   var lH=s.xG[0],lA=s.xG[1],G=10,pH=0,pD=0,pA=0;
@@ -1057,7 +1071,7 @@ function switchPerfTab(tab){
   ['overview','exact','matchs'].forEach(function(t){var el=document.getElementById('perf-tab-'+t);if(el)el.style.display=t===tab?'block':'none';});
 }
 function buildPerfPage(){
-  var finished=ALL_MATCHES.filter(function(m){return m.score&&!m.note;}),total=finished.length;
+  var finished=getActiveMatches().filter(function(m){return m.score&&!m.note;}),total=finished.length;
   if(!total){document.getElementById('perf-content').innerHTML='<div class="page-header"><div class="page-title">Performance du modèle</div><div class="page-sub">Les statistiques apparaîtront dès que les premiers matchs seront terminés.</div></div>';return;}
   var correct1X2=0,overallSurprise=0;
   var betTypes={over25:{c:0,t:0,label:'Plus de 2,5 buts'},under25:{c:0,t:0,label:'Moins de 2,5 buts'},over15:{c:0,t:0,label:'Plus de 1,5 buts'},btts_yes:{c:0,t:0,label:'Les deux équipes marquent'},cs_home:{c:0,t:0,label:'Clean sheet domicile'},cs_away:{c:0,t:0,label:'Clean sheet extérieur'}};
@@ -1084,7 +1098,7 @@ function buildPerfPage(){
     return'<tr><td><span class="rt-grp">'+r.grpLbl+'</span></td><td class="rt-teams">'+m.home.flag+' '+m.home.name+' vs '+m.away.flag+' '+m.away.name+'</td><td class="rt-score">'+m.score.home+'–'+m.score.away+'</td><td style="font-size:11px;color:var(--ink3)">'+r.pred+'<br><span style="font-size:10px">Confiance '+r.leadPct+'%</span></td><td><span class="rt-hit '+(r.ok?'yes':'no')+'">'+(r.ok?'✓ Correct':'✗ Raté')+'</span> '+exactTag+'</td></tr>';
   }).join('');
   document.getElementById('perf-content').innerHTML=
-    '<div class="page-header"><div class="page-title">Performance du modèle</div><div class="page-sub">Précision des prédictions Poisson sur '+total+' matchs disputés à la Coupe du Monde 2026</div></div>'+
+    '<div class="page-header"><div class="page-title">Performance du modèle</div><div class="page-sub">Précision des prédictions Poisson sur '+total+' matchs disputés à la '+(getCompetition(__currentCompetitionId)||{}).name+'</div></div>'+
     '<div class="perf-hero"><div class="perf-hero-stat"><div class="perf-hero-num">'+exactHits+'</div><div class="perf-hero-stat-lbl">Scores exacts trouvés</div></div>'+
       '<div class="perf-hero-text"><div class="perf-hero-title">⭐ Ce qui distingue SporTiser</div><div class="perf-hero-sub">Sur '+total+' matchs joués, notre modèle a identifié le score exact dans sa zone de forte probabilité à '+exactHits+' reprise'+(exactHits>1?'s':'')+' ('+exactAcc+'%) — bien au-delà d\'un simple pronostic 1X2. C\'est notre matrice de scores qui fait la différence.</div></div></div>'+
     '<div class="perf-kpi-row"><div class="perf-kpi purple"><div class="perf-kpi-val">'+exactAcc+'%</div><div class="perf-kpi-lbl">Score exact trouvé</div></div><div class="perf-kpi blue"><div class="perf-kpi-val">'+total+'</div><div class="perf-kpi-lbl">Matchs analysés</div></div><div class="perf-kpi slate"><div class="perf-kpi-val">'+acc+'%</div><div class="perf-kpi-lbl">Précision 1X2</div></div><div class="perf-kpi amber"><div class="perf-kpi-val">'+avgGoals+'</div><div class="perf-kpi-lbl">Buts/match moy.</div></div></div>'+
@@ -1114,6 +1128,57 @@ function switchPage(page){
   ['matchs','ligues','perf','aide'].forEach(function(p){var el=document.getElementById('page-'+p);if(el)el.classList.toggle('active',p===page);});
   if(page==='matchs')closePanel();
   if(page==='perf')buildPerfPage();
+  if(page==='ligues')buildLiguesPage();
+}
+
+/* ===== SÉLECTEUR DE COMPÉTITION (page Ligues) ===== */
+function updateSidebarCompLabel(){
+  var comp=getCompetition(__currentCompetitionId);
+  var el=document.getElementById('sidebar-comp-label');
+  if(el&&comp)el.textContent=comp.name+' · Tous les matchs';
+}
+// Génère les options du filtre "Groupe" pour la compétition active.
+// Pour la CDM 2026, on garde le mapping historique (groupes + phases à élimination).
+// Pour une future compétition (clubs), fallback générique sur les valeurs de "groupe" présentes.
+function renderGroupFilterOptions(compId){
+  var sel=document.getElementById('group-filter');if(!sel)return;
+  if(compId==='cdm2026'){
+    sel.innerHTML='<option value="">Groupe</option>'+
+      ['A','B','C','D','E','F','G','H','I','J','K','L'].map(function(g){return'<option>'+g+'</option>';}).join('')+
+      '<option value="32es">32es de finale</option><option value="16es">16es de finale</option>'+
+      '<option value="quarts">Quarts</option><option value="demis">Demi-finales</option><option value="finale">Finale</option>';
+    return;
+  }
+  var matches=DataSource.getMatches(compId);
+  var groups=[];matches.forEach(function(m){if(m.groupe&&groups.indexOf(m.groupe)===-1)groups.push(m.groupe);});
+  sel.innerHTML='<option value="">Groupe</option>'+groups.map(function(g){return'<option>'+g+'</option>';}).join('');
+}
+function switchCompetition(id){
+  var comp=getCompetition(id);
+  if(!comp||comp.status==='coming')return;
+  __currentCompetitionId=id;
+  __selectedMatchId=null;
+  __currentView=comp.status==='archived'?'finished':'upcoming';
+  document.querySelectorAll('.vt-btn').forEach(function(b){b.classList.toggle('active',b.dataset.view===__currentView);});
+  updateSidebarCompLabel();
+  renderGroupFilterOptions(id);
+  document.getElementById('main-panel').innerHTML='<div class="empty"><div class="empty-icon">⚽</div><div class="empty-headline">Sélectionne un match</div><p class="empty-sub">Modèle Poisson · Probabilités temps réel</p></div>';
+  switchPage('matchs');
+  renderMatchList(document.getElementById('group-filter').value,__currentView);
+}
+function buildLiguesPage(){
+  var grid=document.getElementById('ligues-grid');if(!grid)return;
+  grid.innerHTML=COMPETITIONS.map(function(c){
+    var isActive=c.id===__currentCompetitionId;
+    var badgeClass=c.status==='live'?'badge-live-now':c.status==='archived'?'badge-available':'badge-coming';
+    var clickable=c.status!=='coming';
+    return'<div class="ligue-card'+(isActive?' active-ligue':'')+'" style="'+(clickable?'':'opacity:.55;cursor:default')+'"'+(clickable?' onclick="switchCompetition(\''+c.id+'\')"':'')+'>'+
+      '<div class="ligue-flag">'+c.icon+'</div>'+
+      '<div class="ligue-name">'+c.name+'</div>'+
+      '<div class="ligue-country">'+c.country+'</div>'+
+      '<span class="ligue-badge '+badgeClass+'">'+c.badgeLabel+'</span>'+
+    '</div>';
+  }).join('');
 }
 
 document.querySelectorAll('.vt-btn').forEach(function(btn){
@@ -1133,6 +1198,9 @@ function startPolling(){if(__pollingInterval)return;__pollingInterval=setInterva
 function stopPolling(){if(__pollingInterval){clearInterval(__pollingInterval);__pollingInterval=null;}}
 document.addEventListener('visibilitychange',function(){if(document.hidden)stopPolling();else{checkPremiumAfterPayment();startPolling();}});
 
+updateSidebarCompLabel();
+renderGroupFilterOptions(__currentCompetitionId);
+buildLiguesPage();
 renderMatchList('',__currentView);
 initAuth();
 startPolling();
