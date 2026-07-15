@@ -39,28 +39,43 @@ nav{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(255,255,255,
   background:var(--bg);
   position:relative;overflow:hidden;
 }
+/* --- MODIFICATIONS CSS --- */
+
+/* 1. On repositionne et agrandit le ballon */
 .hero::before {
   content: '';
   position: absolute;
-  /* Repositionnement pour un rendu propre à grande taille */
-  bottom: -10%; 
-  right: -15%; 
-  /* On augmente la taille maximale de l'image */
-  width: 80vw; 
-  max-width: 900px; 
+  /* Positionné plus haut (top) et plus vers le centre (right) */
+  top: 10%; 
+  right: -5%; 
+  /* Ballon très gros */
+  width: 90vw; 
+  max-width: 1000px; 
   aspect-ratio: 1;
   background-image: url('ballon_foot.png');
-  /* 'cover' ou un pourcentage élevé force le zoom du ballon */
-  background-size: 100% auto; 
+  /* Force le ballon à remplir toute la zone définie ci-dessus */
+  background-size: cover; 
   background-repeat: no-repeat;
   background-position: center;
-  /* Léger ajustement de l'opacité si nécessaire pour le contraste */
-  opacity: 0.05; 
+  /* Opacité très faible pour ne pas gêner la lecture quand il est derrière */
+  opacity: 0.04; 
   filter: grayscale(100%);
-  transform: rotate(15deg);
-  z-index: 0;
+  transform: rotate(10deg);
+  /* z-index faible pour être en arrière-plan */
+  z-index: 0; 
   pointer-events: none;
   mix-blend-mode: multiply;
+}
+
+/* 2. IMPORTANT : On force le texte à passer DEVANT le ballon */
+.hero-content {
+  position: relative;
+  /* z-index supérieur au ballon pour passer devant */
+  z-index: 2; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 }
 .hero-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center}
 .hero-eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:600;color:var(--blue);background:var(--blue-pale);border:1px solid var(--blue-pale2);padding:5px 13px;border-radius:20px;margin-bottom:26px;letter-spacing:.05em;text-transform:uppercase}
