@@ -60,26 +60,44 @@ nav{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(255,255,255,
   mix-blend-mode: multiply;
 }
 
-/* --- LE JOUEUR DE FOOT (À GAUCHE, MÊME ALIGNEMENT) --- */
+/* --- LE BALLON (À DROITE — RÉDUIT DE 20%) --- */
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 10%; 
+  right: -5%; 
+  /* Dimensions réduites de 20% */
+  width: 72vw; 
+  max-width: 800px; 
+  aspect-ratio: 1;
+  background-image: url('ballon_foot.png');
+  background-size: cover; 
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.04; 
+  filter: grayscale(100%);
+  transform: rotate(10deg);
+  z-index: 0; 
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+
+/* --- LE JOUEUR DE FOOT (À GAUCHE — PLUS VISIBLE ET DÉCALÉ) --- */
 .hero::after {
   content: '';
   position: absolute;
-  /* Aligné en haut sur le même plan que le ballon */
   top: 10%; 
-  /* Positionné à gauche cette fois */
-  left: -5%; 
-  /* Même taille globale pour garder l'équilibre */
+  /* Décalé d'environ 3cm vers la gauche pour sortir de l'écran */
+  left: -15%; 
   width: 90vw; 
   max-width: 900px; 
   aspect-ratio: 1;
-  /* Remplace par le nom exact de ton fichier image */
   background-image: url('joueur_foot.png'); 
-  /* 'contain' est souvent mieux pour un joueur pour éviter de lui couper la tête ou les pieds */
   background-size: contain; 
   background-repeat: no-repeat;
   background-position: center left;
-  /* Même traitement visuel subtil */
-  opacity: 0.04; 
+  /* Opacité augmentée pour être plus visible */
+  opacity: 0.09; 
   filter: grayscale(100%);
   z-index: 0;
   pointer-events: none;
@@ -89,7 +107,7 @@ nav{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(255,255,255,
 /* --- LE TEXTE (DEVANT LES DEUX IMAGES) --- */
 .hero-content {
   position: relative;
-  z-index: 2; /* Passe au-dessus du ballon ET du joueur */
+  z-index: 2; /* Force le texte et la matrice à passer au-dessus des images */
   display: flex;
   flex-direction: column;
   align-items: center;
