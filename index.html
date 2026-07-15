@@ -39,11 +39,28 @@ nav{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(255,255,255,
   background:var(--bg);
   position:relative;overflow:hidden;
 }
-.hero::before{
-  content:'';position:absolute;top:-8%;right:-12%;width:62vw;max-width:620px;aspect-ratio:1;
-  background-image:url('ballon_foot.png');background-size:contain;background-repeat:no-repeat;background-position:center;
-  opacity:0.07;filter:grayscale(100%);transform:rotate(15deg);z-index:0;pointer-events:none;
-  mix-blend-mode:multiply;
+.hero::before {
+  content: '';
+  position: absolute;
+  /* Repositionnement pour un rendu propre à grande taille */
+  bottom: -10%; 
+  right: -15%; 
+  /* On augmente la taille maximale de l'image */
+  width: 80vw; 
+  max-width: 900px; 
+  aspect-ratio: 1;
+  background-image: url('ballon_foot.png');
+  /* 'cover' ou un pourcentage élevé force le zoom du ballon */
+  background-size: 100% auto; 
+  background-repeat: no-repeat;
+  background-position: center;
+  /* Léger ajustement de l'opacité si nécessaire pour le contraste */
+  opacity: 0.05; 
+  filter: grayscale(100%);
+  transform: rotate(15deg);
+  z-index: 0;
+  pointer-events: none;
+  mix-blend-mode: multiply;
 }
 .hero-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center}
 .hero-eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:600;color:var(--blue);background:var(--blue-pale);border:1px solid var(--blue-pale2);padding:5px 13px;border-radius:20px;margin-bottom:26px;letter-spacing:.05em;text-transform:uppercase}
