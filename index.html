@@ -39,36 +39,14 @@ nav{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(255,255,255,
   background:var(--bg);
   position:relative;overflow:hidden;
 }
-/* --- LE BALLON (À DROITE) --- */
 .hero::before {
   content: '';
   position: absolute;
   top: 10%; 
   right: -5%; 
-  width: 90vw; 
-  max-width: 1000px; 
-  aspect-ratio: 1;
-  background-image: url('ballon_foot.png');
-  background-size: cover; 
-  background-repeat: no-repeat;
-  background-position: center;
-  opacity: 0.04; 
-  filter: grayscale(100%);
-  transform: rotate(10deg);
-  z-index: 0; 
-  pointer-events: none;
-  mix-blend-mode: multiply;
-}
-
-/* --- LE BALLON (À DROITE — RÉDUIT DE 20%) --- */
-.hero::before {
-  content: '';
-  position: absolute;
-  top: 10%; 
-  right: -5%; 
-  /* Dimensions réduites de 20% */
-  width: 72vw; 
-  max-width: 800px; 
+  /* Dimensions réduites de 20% supplémentaires */
+  width: 57vw; 
+  max-width: 640px; 
   aspect-ratio: 1;
   background-image: url('ballon_foot.png');
   background-size: cover; 
