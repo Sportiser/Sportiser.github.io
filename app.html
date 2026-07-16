@@ -652,10 +652,8 @@ async function openStripe(plan){
       })
     });
     var data=await res.json();
-    if(data.url){
-      var checks=0;
-      var pollId=setInterval(async function(){checks++;await checkPremiumAfterPayment();if(IS_PREMIUM||checks>=60)clearInterval(pollId);},5000);
-      window.open(data.url,'_blank');
+   if(data.url){
+      window.location.href=data.url;
     }else{
       alert('Erreur lors de la création du paiement : '+(data.error||'inconnue'));
     }
