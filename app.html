@@ -563,6 +563,10 @@ var currentUser=null,IS_PREMIUM=false;
 var __currentView='upcoming',__selectedMatchId=null;
 var isMobile=window.innerWidth<=640;
 window.addEventListener('resize',function(){isMobile=window.innerWidth<=640;});
+  if(new URLSearchParams(window.location.search).get('paid')==='1'){
+  var __paidChecks=0;
+  var __paidPoll=setInterval(async function(){__paidChecks++;await checkPremiumAfterPayment();if(IS_PREMIUM||__paidChecks>=24)clearInterval(__paidPoll);},5000);
+}
 
 async function initAuth(){
   try{var sess=await sb.auth.getSession();if(sess.data&&sess.data.session){currentUser=sess.data.session.user;await refreshPremiumStatus();}}catch(e){showNetworkBanner('Impossible de joindre le serveur.','error');}
