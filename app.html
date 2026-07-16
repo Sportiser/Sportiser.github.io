@@ -633,7 +633,35 @@ async function forceCheckPremium(){
   if(IS_PREMIUM){updateAccountUI();if(__selectedMatchId!==null)showMatch(__selectedMatchId,true);}
   else if(overlay)overlay.innerHTML='<div class="premium-lock">🔒</div><div class="premium-title">Accès non trouvé</div><div class="premium-sub">Si tu viens de payer, attends 1-2 min et réessaie.</div><button class="premium-cta" onclick="goToPremium()">Réessayer</button>';
 }
-function openStripe(plan){var checks=0;var pollId=setInterval(async function(){checks++;await checkPremiumAfterPayment();if(IS_PREMIUM||checks>=60)clearInterval(pollId);},5000);window.open(STRIPE_LINKS[plan]+'?prefilled_email='+encodeURIComponent(currentUser.email),'_blank');}
+async function openStripe(plan){
+  if(!currentUser){openAuthModal();return;}
+  var refCode=null;
+  try{refCode=localStorage.getItem('sportiser_ref_code')||null;}catch(e){}
+  try{
+    var res=await fetch('https://vtztvwszfcgxadgxqray.supabase.co/functions/v1/create-checkout',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Bearer '+SUPABASE_KEY
+      },
+      body:JSON.stringify({
+        plan:plan,
+        userEmail:currentUser.email,
+        userId:currentUser.id,
+        referralCode:refCode
+      })
+    });
+    var data=await res.json();
+    if(data.url){
+      var checks=0;
+      var pollId=setInterval(async function(){checks++;await checkPremiumAfterPayment();if(IS_PREMIUM||checks>=60)clearInterval(pollId);},5000);
+      window.open(data.url,'_blank');
+    }else{
+      alert('Erreur lors de la création du paiement : '+(data.error||'inconnue'));
+    }
+  }catch(err){
+    alert('Impossible de contacter le serveur de paiement. Réessaie dans un instant.');
+}
 
 /* ================================================================
    REGISTRE DES COMPÉTITIONS
