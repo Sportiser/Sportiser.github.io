@@ -548,6 +548,7 @@ details[open] .faq-chevron{transform:rotate(180deg)}
         <div class="account-row"><span>Email</span><span id="account-email">—</span></div>
         <div class="account-row"><span>Statut</span><span class="account-status" id="account-status">—</span></div>
       </div>
+      <button class="modal-submit" style="margin-bottom:8px" onclick="openCustomerPortal()">Gérer mon abonnement</button>
       <button class="modal-submit logout" onclick="handleLogout()">Se déconnecter</button>
       <div class="modal-msg" id="account-msg"></div>
     </div>
@@ -614,6 +615,21 @@ document.getElementById('auth-form').addEventListener('submit',async function(e)
     msg.textContent=errMap[err.message]||err.message||'Une erreur est survenue.';
   }finally{btn.disabled=false;btn.textContent=mode==='login'?'Se connecter':'Créer un compte';}
 });
+  async function openCustomerPortal(){
+  if(!currentUser)return;
+  var msg=document.getElementById('account-msg');
+  msg.className='modal-msg';msg.textContent='Ouverture du portail…';
+  try{
+    var res=await fetch('https://vtztvwszfcgxadgxqray.supabase.co/functions/v1/customer-portal',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPABASE_KEY},
+      body:JSON.stringify({userEmail:currentUser.email})
+    });
+    var data=await res.json();
+    if(data.url){window.location.href=data.url;}
+    else{msg.className='modal-msg error';msg.textContent=data.error||'Erreur lors de l\'ouverture du portail.';}
+  }catch(err){msg.className='modal-msg error';msg.textContent='Impossible de contacter le serveur.';}
+}
 async function handleLogout(){var btn=document.querySelector('#auth-logged-in .modal-submit');btn.disabled=true;btn.textContent='Déconnexion…';try{await sb.auth.signOut();closeAuthModal();}catch(e){btn.disabled=false;btn.textContent='Se déconnecter';}}
 document.getElementById('account-btn').addEventListener('click',openAuthModal);
 document.getElementById('account-btn-mobile').addEventListener('click',openAuthModal);
