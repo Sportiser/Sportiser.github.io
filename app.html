@@ -527,13 +527,10 @@ details[open] .faq-chevron{transform:rotate(180deg)}
   <div class="ligues-wrap">
     <div class="page-header">
       <div class="page-title">Compétitions</div>
-      <div class="page-sub">Le même modèle statistique, appliqué à chaque compétition. Choisis-en une pour ouvrir ses analyses, consulter son track record, ou être alerté à son lancement.</div>
+      <div class="page-sub">Choisis une compétition à analyser.</div>
     </div>
     <div id="ligues-sections"></div>
     <div id="preopening-wrap"></div>
-    <div class="comingsoon-note">
-      <p>Les 5 grands championnats et la Champions League ouvrent avec leur 1ʳᵉ journée de la saison 2026/27. Chaque prédiction y sera figée et horodatée avant le coup d'envoi — le track record se construira match après match, en toute transparence.</p>
-    </div>
   </div>
 </div>
 
@@ -1115,25 +1112,22 @@ function buildPerfPage(){
   var tabsHtml=COMPETITIONS.map(function(c){
     var hasData=!!COMPETITION_STORE[c.id];
     var dotClass=hasData?'done':'wait';
-    var statusTxt=c.status==='archived'?'':'';
     return'<button class="tr-comp-tab'+(c.id===__trComp?' active':'')+'" onclick="switchTrComp(\''+c.id+'\')"><span class="tr-tab-dot '+dotClass+'"></span>'+c.icon+' '+c.name+'</button>';
   }).join('');
   var header=
-    '<div class="page-header"><div class="page-title">Track Record</div><div class="page-sub">La performance du modèle, compétition par compétition. Chaque prédiction est figée avant le coup d\'envoi — pas de réécriture après coup.</div></div>'+
-    '<div class="tr-global"><div class="tr-global-num">'+globalN+'</div><div class="tr-global-text"><b>matchs analysés depuis juin 2026</b>, toutes compétitions confondues. Ce compteur grandit à chaque journée — il matérialise l\'ancienneté et la constance du modèle.</div></div>'+
-    '<div class="tr-method">Le modèle est le même partout : une loi de <b>Poisson</b> calibrée sur les xG de chaque équipe. Il a d\'abord été <b>testé publiquement sur la Coupe du Monde 2026</b> (archive ci-dessous), et se déploie sur la saison 2026/27 avec la même méthode.</div>'+
+    '<div class="page-header"><div class="page-title">Track Record</div><div class="page-sub">La précision réelle du modèle, compétition par compétition.</div></div>'+
+    '<div style="font-size:12px;color:var(--ink3);margin-bottom:16px">'+globalN+' matchs analysés depuis juin 2026, toutes compétitions confondues.</div>'+
     '<div class="tr-comp-tabs">'+tabsHtml+'</div>';
 
   var comp=getCompetition(__trComp);
   var content='';
   if(!COMPETITION_STORE[__trComp]){
-    // Compétition future : track record en construction
     var openTxt=comp.openDate?new Date(comp.openDate).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}):'la saison 2026/27';
     content='<div class="tr-empty">'+
       '<div class="tr-empty-icon">'+comp.icon+'</div>'+
-      '<div class="tr-empty-title">'+comp.name+' — track record en construction</div>'+
+      '<div class="tr-empty-title">'+comp.name+' — bientôt</div>'+
       '<div class="tr-empty-date">Ouverture le '+openTxt+'</div>'+
-      '<div class="tr-empty-text">Les prédictions sont figées avant chaque coup d\'envoi et horodatées. Le track record se remplira ici, match après match, en toute transparence — on annonce la couleur <b>avant</b> d\'avoir les résultats.</div>'+
+      '<div class="tr-empty-text">Le track record se remplira ici, match après match, dès la 1ʳᵉ journée.</div>'+
       '<button class="tr-empty-cta" onclick="switchPage(\'ligues\')">Être alerté au lancement →</button>'+
     '</div>';
     document.getElementById('perf-content').innerHTML=header+content;
@@ -1141,85 +1135,41 @@ function buildPerfPage(){
   }
 
   // Compétition avec données (CDM archivée)
-  var oldComp=__currentCompetitionId;__currentCompetitionId=__trComp; // pour getMatchData
+  var oldComp=__currentCompetitionId;__currentCompetitionId=__trComp;
   var finished=DataSource.getMatches(__trComp).filter(function(m){return m.score&&!m.note;}),total=finished.length;
   if(!total){document.getElementById('perf-content').innerHTML=header+'<div class="tr-empty"><div class="tr-empty-icon">📊</div><div class="tr-empty-title">Aucun match terminé</div></div>';__currentCompetitionId=oldComp;return;}
-  var correct1X2=0,overallSurprise=0;
-  var betTypes={over25:{c:0,t:0,label:'Plus de 2,5 buts'},under25:{c:0,t:0,label:'Moins de 2,5 buts'},over15:{c:0,t:0,label:'Plus de 1,5 buts'},btts_yes:{c:0,t:0,label:'Les deux équipes marquent'},cs_home:{c:0,t:0,label:'Clean sheet domicile'},cs_away:{c:0,t:0,label:'Clean sheet extérieur'}};
-  var matchRows=[],exactHits=0,totalGoals=0;
+  var correct1X2=0,matchRows=[],exactHits=0;
   finished.forEach(function(m){
     var md=getMatchData(m),paris=computeParis(m,md.stats);
     var pred=predictedOutcome(m),act=actualOutcome(m.score),ok=pred===act;
     if(ok)correct1X2++;
     var leadPct=Math.max(paris[0].pct,paris[1].pct,paris[2].pct);
-    if(!ok)overallSurprise+=leadPct;
-    paris.forEach(function(b){if(b.type&&betTypes[b.type]){betTypes[b.type].t++;if(getPredOutcome(b,m.score))betTypes[b.type].c++;}});
     var exactOk=exactScoreHit(m);if(exactOk)exactHits++;
-    totalGoals+=m.score.home+m.score.away;
     var grpLbl=m.phase==='16es'?'32es':m.phase==='8es'?'16es':m.phase==='quarts'?'Quarts':m.phase==='demis'?'Demis':m.phase==='finale'?'Finale':(m.groupe||'');
-    matchRows.push({m:m,ok:ok,exactOk:exactOk,pred:pred==='home_win'?m.home.flag+' '+m.home.name:pred==='draw'?'Nul':m.away.flag+' '+m.away.name,leadPct:leadPct,darkBlueCount:countDarkBlueScores(m),grpLbl:grpLbl});
+    matchRows.push({m:m,ok:ok,exactOk:exactOk,pred:pred==='home_win'?m.home.flag+' '+m.home.name:pred==='draw'?'Nul':m.away.flag+' '+m.away.name,leadPct:leadPct,grpLbl:grpLbl});
   });
-  var acc=Math.round(correct1X2/total*100),upsets=total-correct1X2,exactAcc=Math.round(exactHits/total*100);
-  var avgConfWhenWrong=upsets>0?Math.round(overallSurprise/upsets)+'%':'—',avgGoals=(totalGoals/total).toFixed(2);
-  function donut(pct,color){var r=40,c=2*Math.PI*r;return'<svg width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="'+r+'" fill="none" stroke="var(--line2)" stroke-width="10"/><circle cx="50" cy="50" r="'+r+'" fill="none" stroke="'+color+'" stroke-width="10" stroke-dasharray="'+(c*pct/100).toFixed(1)+' '+(c*(100-pct)/100).toFixed(1)+'" stroke-linecap="round"/></svg>';}
-  var accRows='';
-  Object.keys(betTypes).forEach(function(k){var bt=betTypes[k];if(!bt.t)return;var pct=Math.round(bt.c/bt.t*100);var fc=pct>=65?'acc-fill-green':pct>=45?'acc-fill-amber':'acc-fill-red';var col=pct>=65?'var(--green)':pct>=45?'var(--amber)':'var(--red)';accRows+='<div class="acc-row"><span class="acc-lbl">'+bt.label+'</span><div class="acc-track"><div class="acc-fill '+fc+'" style="width:'+pct+'%"></div></div><span class="acc-pct" style="color:'+col+'">'+pct+'%</span><span class="acc-n">'+bt.c+'/'+bt.t+'</span></div>';});
+  var acc=Math.round(correct1X2/total*100),exactAcc=Math.round(exactHits/total*100);
   var tableRows=matchRows.slice().sort(function(a,b){return b.leadPct-a.leadPct;}).map(function(r){
     var m=r.m;var exactTag=r.exactOk?'<span class="rt-hit exact">⭐ Exact</span>':'';
-    return'<tr><td><span class="rt-grp">'+r.grpLbl+'</span></td><td class="rt-teams">'+m.home.flag+' '+m.home.name+' vs '+m.away.flag+' '+m.away.name+'</td><td class="rt-score">'+m.score.home+'–'+m.score.away+'</td><td style="font-size:11px;color:var(--ink3)">'+r.pred+'<br><span style="font-size:10px">Confiance '+r.leadPct+'%</span></td><td><span class="rt-hit '+(r.ok?'yes':'no')+'">'+(r.ok?'✓ Correct':'✗ Raté')+'</span> '+exactTag+'</td></tr>';
+    return'<tr><td><span class="rt-grp">'+r.grpLbl+'</span></td><td class="rt-teams">'+m.home.flag+' '+m.home.name+' vs '+m.away.flag+' '+m.away.name+'</td><td class="rt-score">'+m.score.home+'–'+m.score.away+'</td><td style="font-size:11px;color:var(--ink3)">'+r.pred+'</td><td><span class="rt-hit '+(r.ok?'yes':'no')+'">'+(r.ok?'✓':'✗')+'</span> '+exactTag+'</td></tr>';
   }).join('');
   content=
-    '<div class="tr-banner archived">🗄️ Compétition terminée — résultats définitifs du modèle sur '+total+' matchs. Cette archive ne bouge plus : c\'est la preuve, pas un pronostic.</div>'+
-    '<div class="methodo-note"><b>Comment lire « score exact trouvé »</b> — le modèle produit une matrice de probabilité pour chaque score. Un score est compté comme « trouvé » quand le résultat réel tombe dans une case à forte probabilité, c\'est-à-dire à plus de <b>65 % du pic</b> de la matrice. C\'est un critère strict et affiché : on n\'ajuste rien après coup.</div>'+
-    '<div class="perf-hero"><div class="perf-hero-stat"><div class="perf-hero-num">'+exactHits+'</div><div class="perf-hero-stat-lbl">Scores exacts trouvés</div></div>'+
-      '<div class="perf-hero-text"><div class="perf-hero-title">⭐ Ce que le modèle a démontré</div><div class="perf-hero-sub">Sur '+total+' matchs joués, le modèle a placé le score exact dans sa zone de forte probabilité '+exactHits+' fois ('+exactAcc+'%) — bien au-delà d\'un simple 1X2.</div></div></div>'+
-    '<div class="perf-kpi-row"><div class="perf-kpi purple"><div class="perf-kpi-val">'+exactAcc+'%</div><div class="perf-kpi-lbl">Score exact trouvé</div></div><div class="perf-kpi blue"><div class="perf-kpi-val">'+total+'</div><div class="perf-kpi-lbl">Matchs analysés</div></div><div class="perf-kpi slate"><div class="perf-kpi-val">'+acc+'%</div><div class="perf-kpi-lbl">Précision 1X2</div></div><div class="perf-kpi amber"><div class="perf-kpi-val">'+avgGoals+'</div><div class="perf-kpi-lbl">Buts/match moy.</div></div></div>'+
-    '<div class="perf-tabs"><button class="perf-tab active" data-ptab="overview" onclick="switchPerfTab(\'overview\')">Vue d\'ensemble</button><button class="perf-tab" data-ptab="exact" onclick="switchPerfTab(\'exact\')">Détail scores</button><button class="perf-tab" data-ptab="matchs" onclick="switchPerfTab(\'matchs\')">Match par match</button></div>'+
-    '<div id="perf-tab-overview">'+
-      '<div class="perf-section"><div class="perf-section-head"><span class="perf-section-title">Score exact — l\'avantage du modèle</span><span class="perf-section-badge badge-purple">'+exactHits+' / '+total+'</span></div>'+
-      '<div class="exact-summary"><div class="exact-donut">'+donut(exactAcc,'var(--purple)')+'<div class="exact-donut-center"><span class="exact-donut-pct">'+exactAcc+'%</span><span class="exact-donut-sub">Réussite</span></div></div>'+
-      '<div class="exact-summary-text">La matrice de scores (onglet <b>Paris</b> de chaque match) affiche les scores les plus probables. Sur les <b>'+total+' matchs</b>, le score final est tombé dans une case à forte probabilité <b>'+exactHits+' fois</b> ('+exactAcc+'%).</div></div></div>'+
-      '<div class="perf-section"><div class="perf-section-head"><span class="perf-section-title">Précision 1X2 (qui gagne)</span><span class="perf-section-badge '+(acc>=60?'badge-green':acc>=45?'badge-amber':'badge-red')+'">'+(acc>=60?'Bon calibrage':acc>=45?'Correct':'À améliorer')+'</span></div>'+
-        '<div class="gauge-row"><div class="gauge-donut">'+donut(acc,'var(--blue)')+'<div class="gauge-center"><span class="gauge-pct">'+acc+'%</span><span class="gauge-sub">Précis</span></div></div>'+
-        '<div class="gauge-legend"><div class="gauge-leg-item"><div class="gauge-leg-dot" style="background:var(--blue)"></div><span class="gauge-leg-lbl">Correctes</span><span class="gauge-leg-val">'+correct1X2+'</span></div>'+
-        '<div class="gauge-leg-item"><div class="gauge-leg-dot" style="background:var(--red)"></div><span class="gauge-leg-lbl">Ratées</span><span class="gauge-leg-val">'+upsets+'</span></div>'+
-        '<div class="gauge-leg-item"><div class="gauge-leg-dot" style="background:var(--amber)"></div><span class="gauge-leg-lbl">Conf. moy. quand raté</span><span class="gauge-leg-val">'+avgConfWhenWrong+'</span></div></div></div></div>'+
-      '<div class="perf-section"><div class="perf-section-head"><span class="perf-section-title">Précision par type de pari</span></div><div class="acc-table">'+accRows+'</div></div>'+
+    '<div class="tr-banner archived">🗄️ '+comp.name+' — terminée. Résultats définitifs sur '+total+' matchs (archive figée, en lecture seule).</div>'+
+    '<div class="perf-kpi-row" style="grid-template-columns:repeat(3,1fr)">'+
+      '<div class="perf-kpi blue"><div class="perf-kpi-val">'+acc+'%</div><div class="perf-kpi-lbl">Précision 1X2</div></div>'+
+      '<div class="perf-kpi purple"><div class="perf-kpi-val">'+exactAcc+'%</div><div class="perf-kpi-lbl">Score exact trouvé</div></div>'+
+      '<div class="perf-kpi slate"><div class="perf-kpi-val">'+total+'</div><div class="perf-kpi-lbl">Matchs analysés</div></div>'+
     '</div>'+
-    '<div id="perf-tab-exact" style="display:none"><div class="perf-section"><div class="perf-section-head"><span class="perf-section-title">Détail des scores exacts</span><span class="perf-section-badge badge-purple">'+exactHits+' / '+total+'</span></div>'+
-      '<div style="padding:12px 16px 4px;font-size:12px;color:var(--ink2);line-height:1.6">Un score est « trouvé » quand le score final correspond à une case bleue foncée de la matrice (probabilité > 65 % du pic).</div>'+
-      '<div style="overflow-x:auto;padding:0 0 4px"><table class="result-table"><thead><tr><th>Phase</th><th>Match</th><th>Score réel</th><th>Cases bleues</th><th>Trouvé ?</th></tr></thead><tbody>'+
-        matchRows.slice().sort(function(a,b){return b.m.date.localeCompare(a.m.date);}).map(function(r){var m=r.m;return'<tr><td><span class="rt-grp">'+r.grpLbl+'</span></td><td class="rt-teams">'+m.home.flag+' '+m.home.name+' vs '+m.away.flag+' '+m.away.name+'</td><td class="rt-score">'+m.score.home+'–'+m.score.away+'</td><td style="font-size:11px;color:var(--ink3)">'+r.darkBlueCount+'</td><td>'+(r.exactOk?'<span class="rt-hit exact">⭐ Oui</span>':'<span class="rt-hit no">✗ Non</span>')+'</td></tr>';}).join('')+
-      '</tbody></table></div></div></div>'+
-    '<div id="perf-tab-matchs" style="display:none"><div class="perf-section"><div class="perf-section-head"><span class="perf-section-title">Détail match par match</span><span class="perf-section-badge badge-blue">Trié par confiance</span></div>'+
-      '<div style="overflow-x:auto"><table class="result-table"><thead><tr><th>Phase</th><th>Match</th><th>Score</th><th>Prédiction</th><th>Résultat</th></tr></thead><tbody>'+tableRows+'</tbody></table></div></div></div>';
+    '<div class="perf-section"><div class="perf-section-head"><span class="perf-section-title">Match par match</span><span class="perf-section-badge badge-blue">Trié par confiance</span></div>'+
+      '<div style="overflow-x:auto"><table class="result-table"><thead><tr><th>Phase</th><th>Match</th><th>Score</th><th>Prédiction</th><th>Résultat</th></tr></thead><tbody>'+tableRows+'</tbody></table></div></div>'+
+    '<details style="margin-top:8px"><summary style="cursor:pointer;font-size:12px;color:var(--ink3);padding:6px 2px">Comment est calculé « score exact trouvé » ?</summary><div style="font-size:12px;color:var(--ink2);line-height:1.7;padding:4px 2px 8px">Le modèle produit une matrice de probabilité pour chaque score. Un score est « trouvé » quand le résultat réel tombe dans une case à forte probabilité (plus de 65 % du pic de la matrice). Critère strict, affiché, jamais ajusté après coup.</div></details>';
   document.getElementById('perf-content').innerHTML=header+content;
   __currentCompetitionId=oldComp;
 }
 
 /* ============================ HUB COMPÉTITIONS ============================ */
-function computeArchiveSummary(compId){
-  var old=__currentCompetitionId;__currentCompetitionId=compId;
-  var finished=DataSource.getMatches(compId).filter(function(m){return m.score&&!m.note;});
-  var total=finished.length,correct=0,exact=0;
-  finished.forEach(function(m){if(predictedOutcome(m)===actualOutcome(m.score))correct++;if(exactScoreHit(m))exact++;});
-  __currentCompetitionId=old;
-  return{total:total,acc:total?Math.round(correct/total*100):0,exactAcc:total?Math.round(exact/total*100):0,exact:exact};
-}
 function buildLiguesPage(){
   var wrap=document.getElementById('ligues-sections');if(!wrap)return;
-  var summ=computeArchiveSummary('cdm2026');
-  var heroHtml=
-    '<div style="background:linear-gradient(135deg,#1f2937 0%,var(--blue-dim) 100%);border-radius:var(--r);padding:22px 24px;margin-bottom:22px;color:#fff">'+
-      '<div style="font-family:var(--mono);font-weight:700;font-size:16px;margin-bottom:6px">Le modèle, testé en public.</div>'+
-      '<div style="font-size:12.5px;opacity:.85;line-height:1.6;max-width:520px;margin-bottom:16px">Une loi de Poisson calibrée sur les xG, appliquée à chaque compétition. D\'abord éprouvée sur la Coupe du Monde 2026, prête pour la saison 2026/27.</div>'+
-      '<div style="display:flex;gap:10px;flex-wrap:wrap">'+
-        '<div style="background:rgba(255,255,255,.12);border-radius:var(--r-sm);padding:11px 16px;flex:1;min-width:120px"><div style="font-family:var(--mono);font-weight:700;font-size:22px;line-height:1">'+globalAnalyzedCount()+'</div><div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;opacity:.8;margin-top:4px">Matchs analysés</div></div>'+
-        '<div style="background:rgba(255,255,255,.12);border-radius:var(--r-sm);padding:11px 16px;flex:1;min-width:120px"><div style="font-family:var(--mono);font-weight:700;font-size:22px;line-height:1">'+summ.exactAcc+'%</div><div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;opacity:.8;margin-top:4px">Score exact trouvé</div></div>'+
-        '<div style="background:rgba(255,255,255,.12);border-radius:var(--r-sm);padding:11px 16px;flex:1;min-width:120px"><div style="font-family:var(--mono);font-weight:700;font-size:22px;line-height:1">'+summ.acc+'%</div><div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;opacity:.8;margin-top:4px">Précision 1X2</div></div>'+
-      '</div>'+
-      '<div onclick="switchPage(\'perf\')" style="display:inline-block;margin-top:16px;font-size:12px;font-weight:600;color:#fff;background:rgba(255,255,255,.16);border-radius:var(--r-sm);padding:9px 16px;cursor:pointer">Voir le track record complet →</div>'+
-    '</div>';
   var live=COMPETITIONS.filter(function(c){return c.status==='live';});
   var archived=COMPETITIONS.filter(function(c){return c.status==='archived';});
   var pre=COMPETITIONS.filter(function(c){return c.status==='preopening';});
@@ -1235,9 +1185,9 @@ function buildLiguesPage(){
       '<span class="ligue-badge '+badgeClass+'">'+c.badgeLabel+'</span>'+
     '</div>';
   }
-  var html=heroHtml;
+  var html='';
   if(live.length)html+='<div class="ligues-status-label"><span class="lsl-dot live"></span>En cours</div><div class="ligues-grid">'+live.map(card).join('')+'</div>';
-  if(archived.length)html+='<div class="ligues-status-label"><span class="lsl-dot archived"></span>Archivée · track record complet</div><div class="ligues-grid">'+archived.map(card).join('')+'</div>';
+  if(archived.length)html+='<div class="ligues-status-label"><span class="lsl-dot archived"></span>Archive</div><div class="ligues-grid">'+archived.map(card).join('')+'</div>';
   if(pre.length)html+='<div class="ligues-status-label"><span class="lsl-dot pre"></span>Saison 2026/27 — bientôt</div><div class="ligues-grid">'+pre.map(card).join('')+'</div>';
   wrap.innerHTML=html;
 }
@@ -1341,6 +1291,10 @@ function switchCompetition(id){
   renderMatchList(document.getElementById('group-filter').value,__currentView);
 }
 function switchPage(page){
+  if(page==='matchs'&&!__currentCompetitionId){
+    var def=COMPETITIONS.filter(function(c){return c.status==='live';})[0]||COMPETITIONS.filter(function(c){return c.status==='archived';})[0];
+    if(def){switchCompetition(def.id);return;}
+  }
   document.querySelectorAll('[data-page]').forEach(function(b){b.classList.toggle('active',b.dataset.page===page);});
   ['matchs','ligues','perf','aide'].forEach(function(p){var el=document.getElementById('page-'+p);if(el)el.classList.toggle('active',p===page);});
   if(page==='matchs')closePanel();
@@ -1366,9 +1320,9 @@ function startPolling(){if(__pollingInterval)return;__pollingInterval=setInterva
 function stopPolling(){if(__pollingInterval){clearInterval(__pollingInterval);__pollingInterval=null;}}
 document.addEventListener('visibilitychange',function(){if(document.hidden)stopPolling();else{checkPremiumAfterPayment();startPolling();}});
 
-/* ===== INIT — on démarre sur le hub Compétitions ===== */
-buildLiguesPage();
-updateSidebarCompLabel();
+/* ===== INIT — la CDM (archive) est pré-chargée dans l'onglet Matchs, mais on démarre sur le hub ===== */
+switchCompetition('cdm2026');
+switchPage('ligues');
 initAuth();
 startPolling();
 
