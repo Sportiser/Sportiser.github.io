@@ -239,9 +239,37 @@ footer{background:var(--surface);border-top:1px solid var(--line);padding:30px 2
   section{padding:56px 16px}
   .hero{padding:96px 16px 52px}
   .scores-section{padding:56px 16px}
-  .hero::before{width:110vw;right:-30%;top:auto;bottom:-10%}
+  /* Images de fond : recadrées vers le bas pour libérer le texte et éviter tout débordement */
+  .hero::before{
+    width:74vw;max-width:320px;
+    right:-12%;left:auto;
+    top:auto;bottom:3%;
+    transform:rotate(10deg);
+    opacity:.05;
+  }
+  .hero::after{
+    width:92vw;max-width:380px;
+    left:-22%;
+    top:auto;bottom:-2%;
+    transform:none;
+    background-position:bottom left;
+    opacity:.06;
+  }
   .mc{width:46px;height:44px}
   table.mtx th{width:46px}
+  .hero-matrix-demo{max-width:100%}
+  .matrix-match-bar{padding:12px 14px}
+  .mmb-name{font-size:13px}
+}
+/* Très petits écrans */
+@media(max-width:380px){
+  .hero::before{width:66vw;bottom:5%;right:-16%}
+  .hero::after{width:88vw;left:-26%}
+  .mc{width:40px;height:40px}
+  table.mtx th{width:40px}
+  .mc-pct{font-size:12px}
+  table.mtx{border-spacing:3px}
+  .btn-primary,.btn-secondary{width:100%;justify-content:center}
 }
 </style>
 </head>
