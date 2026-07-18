@@ -850,10 +850,10 @@ var ELIM_MATCHES=[
   {id:4002,phase:'quarts',date:'2026-07-10',heure:'21h00',home:{name:'Espagne',flag:'🇪🇸',rank:6,form:['V','V','V','V','V']},away:{name:'Belgique',flag:'🇧🇪',rank:3,form:['V','V','V','N','D']},stade:'SoFi Stadium, Los Angeles',xgH:2.08,xgA:0.38,score:{home:2,away:1}},
   {id:4003,phase:'quarts',date:'2026-07-11',heure:'23h00',home:{name:'Norvège',flag:'🇳🇴',rank:19,form:['V','V','V','N','D']},away:{name:'Angleterre',flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',rank:4,form:['V','V','N','V','V']},stade:'Hard Rock Stadium, Miami',xgH:0.77,xgA:0.96,score:{home:1,away:2},note:'a.p.'},
   {id:4004,phase:'quarts',date:'2026-07-12',heure:'03h00',home:{name:'Argentine',flag:'🇦🇷',rank:1,form:['V','V','V','V','D']},away:{name:'Suisse',flag:'🇨🇭',rank:22,form:['V','V','N','V','D']},stade:'Arrowhead Stadium, Kansas City',xgH:2.2,xgA:1.1,score:{home:3,away:1},note:'a.p.'},
-  {id:5001,phase:'demis',date:'2026-07-14',heure:'21h00',home:{name:'France',flag:'🇫🇷',rank:2,form:['V','V','V','V','V']},away:{name:'Espagne',flag:'🇪🇸',rank:6,form:['V','V','V','V','V']},stade:"AT&T Stadium, Arlington (Dallas)",xgH:1.9,xgA:1.7,score:{home:2,away:1}},
+  {id:5001,phase:'demis',date:'2026-07-14',heure:'21h00',home:{name:'France',flag:'🇫🇷',rank:2,form:['V','V','V','V','V']},away:{name:'Espagne',flag:'🇪🇸',rank:6,form:['V','V','V','V','V']},stade:"AT&T Stadium, Arlington (Dallas)",xgH:1.9,xgA:1.7,score:{home:0,away:2}},
   {id:5002,phase:'demis',date:'2026-07-15',heure:'21h00',home:{name:'Angleterre',flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',rank:4,form:['V','V','N','V','V']},away:{name:'Argentine',flag:'🇦🇷',rank:1,form:['V','V','V','V','D']},stade:'Mercedes-Benz Stadium, Atlanta',xgH:1.15,xgA:1.0,score:{home:1,away:2}},
-  {id:6001,phase:'finale',date:'2026-07-18',heure:'23h00',home:{name:'Espagne',flag:'🇪🇸',rank:6,form:['V','V','V','V','D']},away:{name:'Angleterre',flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',rank:4,form:['V','V','N','V','D']},stade:'Hard Rock Stadium, Miami',xgH:1.8,xgA:1.8},
-  {id:7001,phase:'finale',date:'2026-07-19',heure:'21h00',home:{name:'France',flag:'🇫🇷',rank:2,form:['V','V','V','V','V']},away:{name:'Argentine',flag:'🇦🇷',rank:1,form:['V','V','V','V','V']},stade:'MetLife Stadium, New York',xgH:1.8,xgA:1.8}
+  {id:6001,phase:'finale',date:'2026-07-18',heure:'23h00',home:{name:'France',flag:'🇫🇷',rank:2,form:['V','V','V','V','D']},away:{name:'Angleterre',flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',rank:4,form:['V','V','N','V','D']},stade:'Hard Rock Stadium, Miami',xgH:1.7,xgA:1.4},
+  {id:7001,phase:'finale',date:'2026-07-19',heure:'21h00',home:{name:'Espagne',flag:'🇪🇸',rank:6,form:['V','V','V','V','V']},away:{name:'Argentine',flag:'🇦🇷',rank:1,form:['V','V','V','V','V']},stade:'MetLife Stadium, New York',xgH:1.6,xgA:1.5}
 ];
 
 /* ===== ADAPTATEUR DE DONNÉES ===== */
@@ -909,8 +909,13 @@ function predictedOutcome(m){var md=getMatchData(m),p=computeParis(m,md.stats);i
 function actualOutcome(score){if(!score)return null;return score.home>score.away?'home_win':score.home===score.away?'draw':'away_win';}
 function wasCorrect(m){if(!m.score)return null;if(m.note&&(m.note.indexOf('TAB')>=0||m.note==='En cours'))return null;return predictedOutcome(m)===actualOutcome(m.score);}
 function computeMatrix(lH,lA,maxG){var mat=[],total=0;for(var h=0;h<=maxG;h++){mat[h]=[];for(var a=0;a<=maxG;a++){var p=ppf(lH,h)*ppf(lA,a);mat[h][a]=p;total+=p;}}for(var h=0;h<=maxG;h++)for(var a=0;a<=maxG;a++)mat[h][a]=Math.round(mat[h][a]/total*1000)/10;return mat;}
-function exactScoreHit(m){if(!m.score)return null;if(m.note)return null;var md=getMatchData(m),lH=md.stats.xG[0],lA=md.stats.xG[1];var mat=computeMatrix(lH,lA,5);var maxPct=0;for(var h=0;h<=5;h++)for(var a=0;a<=5;a++)if(mat[h][a]>maxPct)maxPct=mat[h][a];var sh=m.score.home,sa=m.score.away;if(sh>5||sa>5)return false;return mat[sh][sa]/maxPct>0.65;}
-function countDarkBlueScores(m){var md=getMatchData(m),lH=md.stats.xG[0],lA=md.stats.xG[1];var mat=computeMatrix(lH,lA,5),maxPct=0;for(var h=0;h<=5;h++)for(var a=0;a<=5;a++)if(mat[h][a]>maxPct)maxPct=mat[h][a];var count=0;for(var h=0;h<=5;h++)for(var a=0;a<=5;a++)if(mat[h][a]/maxPct>0.65)count++;return count;}
+/* Seuil unique : une case est "mise en avant" (bleu foncé) et compte comme score trouvé
+   si sa probabilité dépasse ce ratio du pic de la matrice. Un seul endroit à changer. */
+var EXACT_THRESHOLD=0.60;
+function exactScoreHit(m){if(!m.score)return null;if(m.note)return null;var md=getMatchData(m),lH=md.stats.xG[0],lA=md.stats.xG[1];var mat=computeMatrix(lH,lA,5);var maxPct=0;for(var h=0;h<=5;h++)for(var a=0;a<=5;a++)if(mat[h][a]>maxPct)maxPct=mat[h][a];var sh=m.score.home,sa=m.score.away;if(sh>5||sa>5)return false;return mat[sh][sa]/maxPct>EXACT_THRESHOLD;}
+function mostLikelyScore(m){var md=getMatchData(m),mat=computeMatrix(md.stats.xG[0],md.stats.xG[1],5),best={h:0,a:0,pct:0};for(var h=0;h<=5;h++)for(var a=0;a<=5;a++)if(mat[h][a]>best.pct)best={h:h,a:a,pct:mat[h][a]};return best;}
+function phaseLabelFull(m){return m.phase==='16es'?'32es de finale':m.phase==='8es'?'16es de finale':m.phase==='quarts'?'Quarts':m.phase==='demis'?'Demi-finales':m.phase==='finale'?'Finale':'Phase de groupes';}
+function countDarkBlueScores(m){var md=getMatchData(m),lH=md.stats.xG[0],lA=md.stats.xG[1];var mat=computeMatrix(lH,lA,5),maxPct=0;for(var h=0;h<=5;h++)for(var a=0;a<=5;a++)if(mat[h][a]>maxPct)maxPct=mat[h][a];var count=0;for(var h=0;h<=5;h++)for(var a=0;a<=5;a++)if(mat[h][a]/maxPct>EXACT_THRESHOLD)count++;return count;}
 function matchDateTime(m){var t=m.heure.split('h'),hh=parseInt(t[0],10),mm=parseInt(t[1]||'0',10),utcH=hh-2;if(utcH<0)utcH+=24;return new Date(m.date+'T'+String(utcH).padStart(2,'0')+':'+String(mm).padStart(2,'0')+':00Z');}
 function getMatchStatus(m){
   if(m.score&&m.note==='En cours')return'live';
@@ -997,8 +1002,8 @@ function showMatch(id,isRefresh){
     var cells='<th style="text-align:right;padding-right:6px;color:var(--ink3)">'+h+'</th>';
     for(var a=0;a<=5;a++){
       var p=mat[h][a],r=p/maxPct;
-      var bg=r>0.65?'#2d6be4':r>0.35?'rgba(45,107,228,.2)':r>0.1?'rgba(45,107,228,.07)':'var(--surface2)';
-      var col=r>0.65?'#fff':r>0.35?'#1f53c0':r>0.1?'#3b4a6b':'var(--ink3)';
+      var bg=r>EXACT_THRESHOLD?'#2d6be4':r>0.35?'rgba(45,107,228,.2)':r>0.1?'rgba(45,107,228,.07)':'var(--surface2)';
+      var col=r>EXACT_THRESHOLD?'#fff':r>0.35?'#1f53c0':r>0.1?'#3b4a6b':'var(--ink3)';
       var isA=(m.score&&m.score.home===h&&m.score.away===a)?' sc-actual':'';
       cells+='<td class="sc-cell'+isA+'" style="background:'+bg+';color:'+col+'"><span class="sc-score">'+h+'–'+a+'</span><span class="sc-pct">'+p+'%</span></td>';
     }
@@ -1138,31 +1143,64 @@ function buildPerfPage(){
   var oldComp=__currentCompetitionId;__currentCompetitionId=__trComp;
   var finished=DataSource.getMatches(__trComp).filter(function(m){return m.score&&!m.note;}),total=finished.length;
   if(!total){document.getElementById('perf-content').innerHTML=header+'<div class="tr-empty"><div class="tr-empty-icon">📊</div><div class="tr-empty-title">Aucun match terminé</div></div>';__currentCompetitionId=oldComp;return;}
-  var correct1X2=0,matchRows=[],exactHits=0;
+  var correct1X2=0,matchRows=[],exactHits=0,totalGoals=0,sumConf=0;
+  var phases={},phaseOrder=[];
+  var betTypes={over25:{c:0,t:0,label:'Plus de 2,5 buts'},under25:{c:0,t:0,label:'Moins de 2,5 buts'},over15:{c:0,t:0,label:'Plus de 1,5 buts'},btts_yes:{c:0,t:0,label:'Les deux équipes marquent'},cs_home:{c:0,t:0,label:'Clean sheet domicile'},cs_away:{c:0,t:0,label:'Clean sheet extérieur'}};
   finished.forEach(function(m){
     var md=getMatchData(m),paris=computeParis(m,md.stats);
     var pred=predictedOutcome(m),act=actualOutcome(m.score),ok=pred===act;
     if(ok)correct1X2++;
     var leadPct=Math.max(paris[0].pct,paris[1].pct,paris[2].pct);
+    sumConf+=leadPct;
     var exactOk=exactScoreHit(m);if(exactOk)exactHits++;
+    totalGoals+=m.score.home+m.score.away;
+    paris.forEach(function(b){if(b.type&&betTypes[b.type]){betTypes[b.type].t++;if(getPredOutcome(b,m.score))betTypes[b.type].c++;}});
+    var ph=phaseLabelFull(m);
+    if(!phases[ph]){phases[ph]={n:0,ok:0,exact:0};phaseOrder.push(ph);}
+    phases[ph].n++;if(ok)phases[ph].ok++;if(exactOk)phases[ph].exact++;
     var grpLbl=m.phase==='16es'?'32es':m.phase==='8es'?'16es':m.phase==='quarts'?'Quarts':m.phase==='demis'?'Demis':m.phase==='finale'?'Finale':(m.groupe||'');
-    matchRows.push({m:m,ok:ok,exactOk:exactOk,pred:pred==='home_win'?m.home.flag+' '+m.home.name:pred==='draw'?'Nul':m.away.flag+' '+m.away.name,leadPct:leadPct,grpLbl:grpLbl});
+    var mls=mostLikelyScore(m);
+    matchRows.push({m:m,ok:ok,exactOk:exactOk,pred:pred==='home_win'?m.home.flag+' '+m.home.name:pred==='draw'?'Nul':m.away.flag+' '+m.away.name,leadPct:leadPct,grpLbl:grpLbl,predScore:mls.h+'–'+mls.a,predScorePct:mls.pct});
   });
   var acc=Math.round(correct1X2/total*100),exactAcc=Math.round(exactHits/total*100);
-  var tableRows=matchRows.slice().sort(function(a,b){return b.leadPct-a.leadPct;}).map(function(r){
-    var m=r.m;var exactTag=r.exactOk?'<span class="rt-hit exact">⭐ Exact</span>':'';
-    return'<tr><td><span class="rt-grp">'+r.grpLbl+'</span></td><td class="rt-teams">'+m.home.flag+' '+m.home.name+' vs '+m.away.flag+' '+m.away.name+'</td><td class="rt-score">'+m.score.home+'–'+m.score.away+'</td><td style="font-size:11px;color:var(--ink3)">'+r.pred+'</td><td><span class="rt-hit '+(r.ok?'yes':'no')+'">'+(r.ok?'✓':'✗')+'</span> '+exactTag+'</td></tr>';
+  var avgGoals=(totalGoals/total).toFixed(2),avgConf=Math.round(sumConf/total);
+  // Performance par phase
+  var phaseRows=phaseOrder.map(function(p){
+    var d=phases[p],a=Math.round(d.ok/d.n*100),e=Math.round(d.exact/d.n*100);
+    var col=a>=60?'var(--green)':a>=45?'var(--amber)':'var(--red)';
+    return'<tr><td style="font-weight:500">'+p+'</td><td style="color:var(--ink3)">'+d.n+'</td>'+
+      '<td><span style="font-family:var(--mono);font-weight:600;color:'+col+'">'+a+'%</span> <span style="font-size:10px;color:var(--ink3)">('+d.ok+'/'+d.n+')</span></td>'+
+      '<td><span style="font-family:var(--mono);font-weight:600;color:var(--purple)">'+e+'%</span> <span style="font-size:10px;color:var(--ink3)">('+d.exact+'/'+d.n+')</span></td></tr>';
+  }).join('');
+  // Précision par marché
+  var accRows='';
+  Object.keys(betTypes).forEach(function(k){var bt=betTypes[k];if(!bt.t)return;var pct=Math.round(bt.c/bt.t*100);var fc=pct>=65?'acc-fill-green':pct>=45?'acc-fill-amber':'acc-fill-red';var col=pct>=65?'var(--green)':pct>=45?'var(--amber)':'var(--red)';accRows+='<div class="acc-row"><span class="acc-lbl">'+bt.label+'</span><div class="acc-track"><div class="acc-fill '+fc+'" style="width:'+pct+'%"></div></div><span class="acc-pct" style="color:'+col+'">'+pct+'%</span><span class="acc-n">'+bt.c+'/'+bt.t+'</span></div>';});
+  // Match par match — chronologique, du plus récent au plus ancien
+  var tableRows=matchRows.slice().sort(function(a,b){return b.m.date.localeCompare(a.m.date)||b.m.heure.localeCompare(a.m.heure);}).map(function(r){
+    var m=r.m;var exactTag=r.exactOk?' <span class="rt-hit exact">⭐</span>':'';
+    var dt=new Date(m.date).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'});
+    return'<tr><td style="font-size:10.5px;color:var(--ink3);white-space:nowrap">'+dt+'</td>'+
+      '<td><span class="rt-grp">'+r.grpLbl+'</span></td>'+
+      '<td class="rt-teams">'+m.home.flag+' '+m.home.name+' <span style="color:var(--ink3)">vs</span> '+m.away.flag+' '+m.away.name+'</td>'+
+      '<td style="font-size:11px;color:var(--ink2);white-space:nowrap">'+r.pred+'<br><span style="font-size:10px;color:var(--ink3)">confiance '+r.leadPct+'%</span></td>'+
+      '<td style="white-space:nowrap"><span style="font-family:var(--mono);font-size:11.5px;color:var(--ink2)">'+r.predScore+'</span><br><span style="font-size:10px;color:var(--ink3)">'+r.predScorePct+'%</span></td>'+
+      '<td class="rt-score">'+m.score.home+'–'+m.score.away+'</td>'+
+      '<td style="white-space:nowrap"><span class="rt-hit '+(r.ok?'yes':'no')+'">'+(r.ok?'✓':'✗')+'</span>'+exactTag+'</td></tr>';
   }).join('');
   content=
     '<div class="tr-banner archived">🗄️ '+comp.name+' — terminée. Résultats définitifs sur '+total+' matchs (archive figée, en lecture seule).</div>'+
-    '<div class="perf-kpi-row" style="grid-template-columns:repeat(3,1fr)">'+
+    '<div class="perf-kpi-row">'+
       '<div class="perf-kpi blue"><div class="perf-kpi-val">'+acc+'%</div><div class="perf-kpi-lbl">Précision 1X2</div></div>'+
       '<div class="perf-kpi purple"><div class="perf-kpi-val">'+exactAcc+'%</div><div class="perf-kpi-lbl">Score exact trouvé</div></div>'+
       '<div class="perf-kpi slate"><div class="perf-kpi-val">'+total+'</div><div class="perf-kpi-lbl">Matchs analysés</div></div>'+
+      '<div class="perf-kpi amber"><div class="perf-kpi-val">'+avgGoals+'</div><div class="perf-kpi-lbl">Buts/match</div></div>'+
     '</div>'+
-    '<div class="perf-section"><div class="perf-section-head"><span class="perf-section-title">Match par match</span><span class="perf-section-badge badge-blue">Trié par confiance</span></div>'+
-      '<div style="overflow-x:auto"><table class="result-table"><thead><tr><th>Phase</th><th>Match</th><th>Score</th><th>Prédiction</th><th>Résultat</th></tr></thead><tbody>'+tableRows+'</tbody></table></div></div>'+
-    '<details style="margin-top:8px"><summary style="cursor:pointer;font-size:12px;color:var(--ink3);padding:6px 2px">Comment est calculé « score exact trouvé » ?</summary><div style="font-size:12px;color:var(--ink2);line-height:1.7;padding:4px 2px 8px">Le modèle produit une matrice de probabilité pour chaque score. Un score est « trouvé » quand le résultat réel tombe dans une case à forte probabilité (plus de 65 % du pic de la matrice). Critère strict, affiché, jamais ajusté après coup.</div></details>';
+    '<div class="perf-section"><div class="perf-section-head"><span class="perf-section-title">Performance par phase</span><span class="perf-section-badge badge-blue">Confiance moy. '+avgConf+'%</span></div>'+
+      '<div style="overflow-x:auto"><table class="result-table"><thead><tr><th>Phase</th><th>Matchs</th><th>1X2 correct</th><th>Score exact</th></tr></thead><tbody>'+phaseRows+'</tbody></table></div></div>'+
+    '<div class="perf-section"><div class="perf-section-head"><span class="perf-section-title">Précision par marché</span></div><div class="acc-table">'+accRows+'</div></div>'+
+    '<div class="perf-section"><div class="perf-section-head"><span class="perf-section-title">Match par match</span><span class="perf-section-badge badge-purple">'+exactHits+' scores exacts ⭐</span></div>'+
+      '<div style="overflow-x:auto"><table class="result-table"><thead><tr><th>Date</th><th>Phase</th><th>Match</th><th>Prédiction</th><th>Score prédit</th><th>Réel</th><th></th></tr></thead><tbody>'+tableRows+'</tbody></table></div></div>'+
+    '<details style="margin-top:8px"><summary style="cursor:pointer;font-size:12px;color:var(--ink3);padding:6px 2px">Comment lire ces chiffres ?</summary><div style="font-size:12px;color:var(--ink2);line-height:1.7;padding:4px 2px 8px"><b>Précision 1X2</b> : part des matchs où l\'issue la plus probable selon le modèle (victoire, nul, défaite) s\'est réalisée.<br><b>Score prédit</b> : le score le plus probable de la matrice, avec sa probabilité.<br><b>Score exact trouvé (⭐)</b> : le score final est tombé dans une case à forte probabilité de la matrice (plus de '+Math.round(EXACT_THRESHOLD*100)+' % du pic). Critère fixé à l\'avance et appliqué à tous les matchs sans exception.<br><b>Confiance</b> : probabilité attribuée à l\'issue prédite avant le coup d\'envoi.</div></details>';
   document.getElementById('perf-content').innerHTML=header+content;
   __currentCompetitionId=oldComp;
 }
