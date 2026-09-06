@@ -721,7 +721,7 @@ var COMPETITIONS=[
 {id:'epl2627',icon:'🏴',name:'Premier League',country:'Angleterre · 20 clubs',status:'live',badgeLabel:'Saison 2026/27 en cours · J3',openDate:null},  {id:'laliga2627',icon:'🇪🇸',name:'La Liga',country:'Espagne · 20 clubs',status:'preopening',badgeLabel:'Ouverture 22 août',openDate:'2026-08-22'},
   {id:'bundesliga2627',icon:'🇩🇪',name:'Bundesliga',country:'Allemagne · 18 clubs',status:'preopening',badgeLabel:'Ouverture 21 août',openDate:'2026-08-21'},
   {id:'seriea2627',icon:'🇮🇹',name:'Serie A',country:'Italie · 20 clubs',status:'preopening',badgeLabel:'Ouverture 23 août',openDate:'2026-08-23'},
-  {id:'ucl2627',icon:'⭐',name:'Champions League',country:'UEFA · Europe',status:'preopening',badgeLabel:'Ouverture 16 sept.',openDate:'2026-09-16'}
+  {id:'ucl2627',icon:'⭐',name:'Champions League',country:'UEFA · Europe',status:'live',badgeLabel:'Saison 2026/27 · Phase de ligue J1',openDate:null}
 ];
 var __currentCompetitionId=null;
 function getCompetition(id){return COMPETITIONS.find(function(c){return c.id===id;});}
@@ -891,9 +891,33 @@ var ELIM_MATCHES=[
 {id:20309,groupe:'J3',date:'2026-09-06',heure:'15h00',home:{name:'Everton',flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',form:['V','N']},away:{name:'Manchester United',flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',form:['D','V']},stade:'Hill Dickinson Stadium, Liverpool',xgH:1.3,xgA:1.5},
 {id:20310,groupe:'J3',date:'2026-09-06',heure:'17h30',home:{name:'Arsenal',flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',form:['V','V']},away:{name:'Chelsea',flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',form:['V','V']},stade:'Emirates Stadium, Londres',xgH:1.9,xgA:1.3}
 ];
+
+/* ===== CHAMPIONS LEAGUE 2026/27 — Phase de ligue ===== */
+var UCL_MATCHES=[
+// ===== JOURNÉE 1 (8-10 septembre 2026) =====
+{id:30101,groupe:'J1',date:'2026-09-08',heure:'18h45',home:{name:'AEK Athènes',flag:'🇬🇷',form:[]},away:{name:'LASK',flag:'🇦🇹',form:[]},stade:'Agia Sophia Stadium, Athènes',xgH:1.5,xgA:1.0},
+{id:30102,groupe:'J1',date:'2026-09-08',heure:'18h45',home:{name:'Club Brugge',flag:'🇧🇪',form:[]},away:{name:'Aston Villa',flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',form:['D','D']},stade:'Jan Breydel Stadium, Bruges',xgH:1.3,xgA:1.4},
+{id:30103,groupe:'J1',date:'2026-09-08',heure:'21h00',home:{name:'Borussia Dortmund',flag:'🇩🇪',form:[]},away:{name:'Villarreal',flag:'🇪🇸',form:[]},stade:'Signal Iduna Park, Dortmund',xgH:2.0,xgA:1.1},
+{id:30104,groupe:'J1',date:'2026-09-08',heure:'21h00',home:{name:'Porto',flag:'🇵🇹',form:[]},away:{name:'Manchester City',flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',form:['V','V']},stade:'Estádio do Dragão, Porto',xgH:1.0,xgA:2.3},
+{id:30105,groupe:'J1',date:'2026-09-08',heure:'21h00',home:{name:'Lille',flag:'🇫🇷',form:[]},away:{name:'Real Betis',flag:'🇪🇸',form:[]},stade:'Stade Pierre-Mauroy, Lille',xgH:1.6,xgA:1.2},
+{id:30106,groupe:'J1',date:'2026-09-08',heure:'21h00',home:{name:'Real Madrid',flag:'🇪🇸',form:[]},away:{name:'Inter Milan',flag:'🇮🇹',form:[]},stade:'Santiago Bernabéu, Madrid',xgH:2.2,xgA:1.3},
+{id:30107,groupe:'J1',date:'2026-09-09',heure:'18h45',home:{name:'Barcelone',flag:'🇪🇸',form:[]},away:{name:'Feyenoord',flag:'🇳🇱',form:[]},stade:'Estadi Olímpic Lluís Companys, Barcelone',xgH:2.6,xgA:0.8},
+{id:30108,groupe:'J1',date:'2026-09-09',heure:'18h45',home:{name:'Stuttgart',flag:'🇩🇪',form:[]},away:{name:'Viking FK',flag:'🇳🇴',form:[]},stade:'MHPArena, Stuttgart',xgH:2.1,xgA:0.7},
+{id:30109,groupe:'J1',date:'2026-09-09',heure:'21h00',home:{name:'Liverpool',flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',form:['N','N']},away:{name:'Atlético Madrid',flag:'🇪🇸',form:[]},stade:'Anfield, Liverpool',xgH:1.9,xgA:1.4},
+{id:30110,groupe:'J1',date:'2026-09-09',heure:'21h00',home:{name:'Paris Saint-Germain',flag:'🇫🇷',form:[]},away:{name:'Slovan Bratislava',flag:'🇸🇰',form:[]},stade:'Parc des Princes, Paris',xgH:2.7,xgA:0.5},
+{id:30111,groupe:'J1',date:'2026-09-09',heure:'21h00',home:{name:'Sporting CP',flag:'🇵🇹',form:[]},away:{name:'Galatasaray',flag:'🇹🇷',form:[]},stade:'Estádio José Alvalade, Lisbonne',xgH:1.8,xgA:1.1},
+{id:30112,groupe:'J1',date:'2026-09-09',heure:'21h00',home:{name:'Napoli',flag:'🇮🇹',form:[]},away:{name:'Arsenal',flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',form:['V','V']},stade:'Diego Armando Maradona, Naples',xgH:1.4,xgA:1.6},
+{id:30113,groupe:'J1',date:'2026-09-10',heure:'18h45',home:{name:'Fenerbahçe',flag:'🇹🇷',form:[]},away:{name:'Roma',flag:'🇮🇹',form:[]},stade:'Şükrü Saracoğlu, Istanbul',xgH:1.4,xgA:1.5},
+{id:30114,groupe:'J1',date:'2026-09-10',heure:'18h45',home:{name:'PSV Eindhoven',flag:'🇳🇱',form:[]},away:{name:'Shakhtar Donetsk',flag:'🇺🇦',form:[]},stade:'Philips Stadion, Eindhoven',xgH:1.9,xgA:1.0},
+{id:30115,groupe:'J1',date:'2026-09-10',heure:'21h00',home:{name:'Como',flag:'🇮🇹',form:[]},away:{name:'RB Leipzig',flag:'🇩🇪',form:[]},stade:'Stadio Giuseppe Sinigaglia, Côme',xgH:1.1,xgA:1.7},
+{id:30116,groupe:'J1',date:'2026-09-10',heure:'21h00',home:{name:'Bayern Munich',flag:'🇩🇪',form:[]},away:{name:'Bodø/Glimt',flag:'🇳🇴',form:[]},stade:'Allianz Arena, Munich',xgH:3.0,xgA:0.5},
+{id:30117,groupe:'J1',date:'2026-09-10',heure:'21h00',home:{name:'Manchester United',flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',form:['D','V']},away:{name:'Qarabağ (Sabah)',flag:'🇦🇿',form:[]},stade:'Old Trafford, Manchester',xgH:2.5,xgA:0.4},
+{id:30118,groupe:'J1',date:'2026-09-10',heure:'21h00',home:{name:'Slavia Prague',flag:'🇨🇿',form:[]},away:{name:'Lens',flag:'🇫🇷',form:[]},stade:'Sinobo Stadium, Prague',xgH:1.3,xgA:1.4}
+];
 var COMPETITION_STORE={
   cdm2026:{matches:MATCHES.concat(ELIM_MATCHES),details:MATCH_DATA},
-  epl2627:{matches:EPL_MATCHES,details:{}}
+  epl2627:{matches:EPL_MATCHES,details:{}},
+  ucl2627:{matches:UCL_MATCHES,details:{}}
 };
 var DataSource={
   getMatches:function(compId){var store=COMPETITION_STORE[compId];return store?store.matches:[];},
