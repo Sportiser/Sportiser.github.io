@@ -563,7 +563,7 @@ details[open] .faq-chevron{transform:rotate(180deg)}
         <details class="faq-item"><summary class="faq-q">Comment accéder au Premium ?<span class="faq-chevron">▼</span></summary><p class="faq-a">Crée un compte ou connecte-toi, puis clique sur le cadenas visible sur n'importe quel match. L'accès est immédiat après paiement.</p></details>
         <details class="faq-item"><summary class="faq-q">J'ai payé mais je n'ai pas accès.<span class="faq-chevron">▼</span></summary><p class="faq-a">Le déblocage est automatique en moins de 2 minutes. Recharge la page après t'être connecté avec l'email utilisé lors du paiement. Si le problème persiste, contacte-nous.</p></details>
         <details class="faq-item"><summary class="faq-q">Sur quoi reposent les probabilités ?<span class="faq-chevron">▼</span></summary><p class="faq-a">Sur un modèle de Poisson calibré sur les xG de chaque équipe. La page Track Record montre la précision du modèle, compétition par compétition, avec la méthode de calcul expliquée.</p></details>
-        <details class="faq-item"><summary class="faq-q">Quelles compétitions sont couvertes ?<span class="faq-chevron">▼</span></summary><p class="faq-a">Le modèle a d'abord été testé publiquement sur la Coupe du Monde 2026 (archive consultable). Premier League, La Liga, Bundesliga, Serie A et Champions League ouvrent avec la saison 2026/27 — active l'alerte de lancement dans l'onglet Compétitions.</p></details>
+        <details class="faq-item"><summary class="faq-q">Quelles compétitions sont couvertes ?<span class="faq-chevron">▼</span></summary><p class="faq-a">Le modèle a d'abord été testé publiquement sur la Coupe du Monde 2026 (archive consultable). Premier League et Champions League sont couvertes pour la saison 2026/27. La Liga, Bundesliga et Serie A ouvrent prochainement — active l'alerte de lancement dans l'onglet Compétitions.</p></details>
         <details class="faq-item"><summary class="faq-q">Comment résilier mon abonnement ?<span class="faq-chevron">▼</span></summary><p class="faq-a">Envoie-nous un email à sportiser.app@gmail.com. Les formules hebdomadaires et mensuelles sont sans engagement.</p></details>
       </div>
     </div>
@@ -718,10 +718,10 @@ async function openStripe(plan){
    ================================================================================= */
 var COMPETITIONS=[
   {id:'cdm2026',icon:'🌍',name:'Coupe du Monde 2026',country:'FIFA · USA / Canada / Mexique',status:'archived',badgeLabel:'Terminée · Track record complet',openDate:null},
-{id:'epl2627',icon:'🏴',name:'Premier League',country:'Angleterre · 20 clubs',status:'live',badgeLabel:'Saison 2026/27 en cours · J3',openDate:null},  {id:'laliga2627',icon:'🇪🇸',name:'La Liga',country:'Espagne · 20 clubs',status:'preopening',badgeLabel:'Ouverture 22 août',openDate:'2026-08-22'},
+{id:'epl2627',icon:'🏴',name:'Premier League',country:'Angleterre · 20 clubs',status:'live',badgeLabel:'Saison 2026/27 en cours · J3',openDate:null},  {id:'ucl2627',icon:'⭐',name:'Champions League',country:'UEFA · Europe',status:'live',badgeLabel:'Phase de ligue 2026/27 en cours · J1',openDate:null},
+  {id:'laliga2627',icon:'🇪🇸',name:'La Liga',country:'Espagne · 20 clubs',status:'preopening',badgeLabel:'Ouverture 22 août',openDate:'2026-08-22'},
   {id:'bundesliga2627',icon:'🇩🇪',name:'Bundesliga',country:'Allemagne · 18 clubs',status:'preopening',badgeLabel:'Ouverture 21 août',openDate:'2026-08-21'},
-  {id:'seriea2627',icon:'🇮🇹',name:'Serie A',country:'Italie · 20 clubs',status:'preopening',badgeLabel:'Ouverture 23 août',openDate:'2026-08-23'},
-  {id:'ucl2627',icon:'⭐',name:'Champions League',country:'UEFA · Europe',status:'live',badgeLabel:'Saison 2026/27 · Phase de ligue J1',openDate:null}
+  {id:'seriea2627',icon:'🇮🇹',name:'Serie A',country:'Italie · 20 clubs',status:'preopening',badgeLabel:'Ouverture 23 août',openDate:'2026-08-23'}
 ];
 var __currentCompetitionId=null;
 function getCompetition(id){return COMPETITIONS.find(function(c){return c.id===id;});}
@@ -894,13 +894,13 @@ var ELIM_MATCHES=[
 
 /* ===== CHAMPIONS LEAGUE 2026/27 — Phase de ligue ===== */
 var UCL_MATCHES=[
-// ===== JOURNÉE 1 (8-10 septembre 2026) =====
-{id:30101,groupe:'J1',date:'2026-09-08',heure:'18h45',home:{name:'AEK Athènes',flag:'🇬🇷',form:[]},away:{name:'LASK',flag:'🇦🇹',form:[]},stade:'Agia Sophia Stadium, Athènes',xgH:1.5,xgA:1.0},
-{id:30102,groupe:'J1',date:'2026-09-08',heure:'18h45',home:{name:'Club Brugge',flag:'🇧🇪',form:[]},away:{name:'Aston Villa',flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',form:['D','D']},stade:'Jan Breydel Stadium, Bruges',xgH:1.3,xgA:1.4},
-{id:30103,groupe:'J1',date:'2026-09-08',heure:'21h00',home:{name:'Borussia Dortmund',flag:'🇩🇪',form:[]},away:{name:'Villarreal',flag:'🇪🇸',form:[]},stade:'Signal Iduna Park, Dortmund',xgH:2.0,xgA:1.1},
-{id:30104,groupe:'J1',date:'2026-09-08',heure:'21h00',home:{name:'Porto',flag:'🇵🇹',form:[]},away:{name:'Manchester City',flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',form:['V','V']},stade:'Estádio do Dragão, Porto',xgH:1.0,xgA:2.3},
-{id:30105,groupe:'J1',date:'2026-09-08',heure:'21h00',home:{name:'Lille',flag:'🇫🇷',form:[]},away:{name:'Real Betis',flag:'🇪🇸',form:[]},stade:'Stade Pierre-Mauroy, Lille',xgH:1.6,xgA:1.2},
-{id:30106,groupe:'J1',date:'2026-09-08',heure:'21h00',home:{name:'Real Madrid',flag:'🇪🇸',form:[]},away:{name:'Inter Milan',flag:'🇮🇹',form:[]},stade:'Santiago Bernabéu, Madrid',xgH:2.2,xgA:1.3},
+// ===== JOURNÉE 1 (8-10 septembre 2026) — matchs du 8 septembre déjà joués =====
+{id:30101,groupe:'J1',date:'2026-09-08',heure:'18h45',home:{name:'AEK Athènes',flag:'🇬🇷',form:[]},away:{name:'LASK',flag:'🇦🇹',form:[]},stade:'Agia Sophia Stadium, Athènes',xgH:1.5,xgA:1.0,score:{home:2,away:1}},
+{id:30102,groupe:'J1',date:'2026-09-08',heure:'18h45',home:{name:'Club Brugge',flag:'🇧🇪',form:[]},away:{name:'Aston Villa',flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',form:['D','D']},stade:'Jan Breydel Stadium, Bruges',xgH:1.3,xgA:1.4,score:{home:1,away:1}},
+{id:30103,groupe:'J1',date:'2026-09-08',heure:'21h00',home:{name:'Borussia Dortmund',flag:'🇩🇪',form:[]},away:{name:'Villarreal',flag:'🇪🇸',form:[]},stade:'Signal Iduna Park, Dortmund',xgH:2.0,xgA:1.1,score:{home:3,away:1}},
+{id:30104,groupe:'J1',date:'2026-09-08',heure:'21h00',home:{name:'Porto',flag:'🇵🇹',form:[]},away:{name:'Manchester City',flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',form:['V','V']},stade:'Estádio do Dragão, Porto',xgH:1.0,xgA:2.3,score:{home:0,away:2}},
+{id:30105,groupe:'J1',date:'2026-09-08',heure:'21h00',home:{name:'Lille',flag:'🇫🇷',form:[]},away:{name:'Real Betis',flag:'🇪🇸',form:[]},stade:'Stade Pierre-Mauroy, Lille',xgH:1.6,xgA:1.2,score:{home:2,away:1}},
+{id:30106,groupe:'J1',date:'2026-09-08',heure:'21h00',home:{name:'Real Madrid',flag:'🇪🇸',form:[]},away:{name:'Inter Milan',flag:'🇮🇹',form:[]},stade:'Santiago Bernabéu, Madrid',xgH:2.2,xgA:1.3,score:{home:2,away:1}},
 {id:30107,groupe:'J1',date:'2026-09-09',heure:'18h45',home:{name:'Barcelone',flag:'🇪🇸',form:[]},away:{name:'Feyenoord',flag:'🇳🇱',form:[]},stade:'Estadi Olímpic Lluís Companys, Barcelone',xgH:2.6,xgA:0.8},
 {id:30108,groupe:'J1',date:'2026-09-09',heure:'18h45',home:{name:'Stuttgart',flag:'🇩🇪',form:[]},away:{name:'Viking FK',flag:'🇳🇴',form:[]},stade:'MHPArena, Stuttgart',xgH:2.1,xgA:0.7},
 {id:30109,groupe:'J1',date:'2026-09-09',heure:'21h00',home:{name:'Liverpool',flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',form:['N','N']},away:{name:'Atlético Madrid',flag:'🇪🇸',form:[]},stade:'Anfield, Liverpool',xgH:1.9,xgA:1.4},
